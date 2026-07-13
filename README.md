@@ -9,10 +9,12 @@ First type /arena create <your_arena>. Clickable text will appear instructing yo
 
 
 ## Features (New in 1.8.3!)
+* **Multi-Kits Per Arena:** Arenas can now support multiple kits.
+* **Interactive GUIs:** Flow through an interactive map and kit selection GUI before starting your duels!
 * **Party & Group Duels:** Team up with friends and challenge other parties.
 * **Shared Arenas:** Multiple duels can happen in the same arena concurrently without interference using advanced packet hiding.
 * **Advanced Arena System:** Improved setup and management of arenas.
-* **Fully Editable:** Menus, messages, and rewards are all configurable through YML files.
+* **Fully Editable:** Menus (Arena Kits, Arena Selection, Rewards), messages, and rewards are all configurable through YML files and fully translated to Spanish by default!
 * **Reward System:** Set up rewards for winners (money, xp, items) that expire and can be claimed in a GUI.
 
 ## Commands:
