@@ -41,8 +41,8 @@ public class StatsManager {
                                 rs.getInt("losses"),
                                 rs.getInt("current_streak"),
                                 rs.getInt("best_streak"),
-                                rs.getString("kill_effect") == null ? "K_NONE" : rs.getString("kill_effect"),
-                                rs.getString("victory_effect") == null ? "V_NONE" : rs.getString("victory_effect"),
+                                normalizeEffectId(rs.getString("kill_effect"), "K_NONE"),
+                                normalizeEffectId(rs.getString("victory_effect"), "V_NONE"),
                                 rs.getString("unlocked_cosmetics")
                         );
                         statsCache.put(player.getUniqueId(), stats);
@@ -96,5 +96,16 @@ public class StatsManager {
             return temp;
         }
         return statsCache.get(player.getUniqueId());
+    }
+
+    /**
+     * Normalizes a stored effect ID. If the stored value is null, empty, or the
+     * old legacy "NONE" string (without category prefix), it returns the given default.
+     */
+    private String normalizeEffectId(String stored, String defaultId) {
+        if (stored == null || stored.isEmpty() || stored.equalsIgnoreCase("NONE")) {
+            return defaultId;
+        }
+        return stored;
     }
 }

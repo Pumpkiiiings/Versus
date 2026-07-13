@@ -76,7 +76,13 @@ public class CosmeticsManager {
                     org.bukkit.Material mat = org.bukkit.Material.matchMaterial(iconName);
                     if (mat != null) effect.setIcon(mat);
                 }
-                effect.setPrice(config.getDouble(key + ".price", 0.0));
+                // Support price: none / price: 0 / price: 1000 / price: 1000.0
+                String priceStr = config.getString(key + ".price", "0");
+                double price = 0.0;
+                if (priceStr != null && !priceStr.equalsIgnoreCase("none")) {
+                    try { price = Double.parseDouble(priceStr); } catch (NumberFormatException ignored) {}
+                }
+                effect.setPrice(price);
             }
         }
     }

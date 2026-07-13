@@ -1,12 +1,28 @@
-﻿title: "&bEfectos de Victoria"
-rows: 3
+# ═══════════════════════════════════════════════
+#       MENÚ DE EFECTOS DE VICTORIA
+# ═══════════════════════════════════════════════
+
+title: "&b★ Efectos de Victoria ★"
+rows: 4  # 1-6 filas
 
 back-button:
-  slot: 22
+  slot: 31   # ajusta según el número de filas
   material: ARROW
   name: "&cVolver"
-  lore: []
+  lore:
+    - "&7Regresa al menú principal."
+  flags:
+    - HIDE_ATTRIBUTES
+
+# Item de relleno (opcional)
+empty-button:
+  enabled: true
+  material: BLUE_STAINED_GLASS_PANE
+  name: " "
+  flags:
+    - HIDE_ATTRIBUTES
+  # fill-slots: [27,28,29,30,32,33,34,35]   # solo la última fila; comenta para rellenar todo
 
 effect-lore:
-  selected: "&a&lSELECCIONADO"
+  selected: "&b&l★ SELECCIONADO"
   unselected: "&7Haz clic para seleccionar"

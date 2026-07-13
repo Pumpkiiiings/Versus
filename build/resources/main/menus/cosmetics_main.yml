@@ -1,4 +1,8 @@
-﻿title: "&8Menú de Cosméticos"
+# ═══════════════════════════════════════════════
+#         MENÚ PRINCIPAL DE COSMÉTICOS
+# ═══════════════════════════════════════════════
+
+title: "&8✦ Cosméticos ✦"
 rows: 3
 
 kill-button:
@@ -8,6 +12,8 @@ kill-button:
   lore:
     - "&7Haz clic para ver y seleccionar"
     - "&7tus efectos de asesinato."
+  flags:
+    - HIDE_ATTRIBUTES
 
 victory-button:
   slot: 15
@@ -16,7 +22,14 @@ victory-button:
   lore:
     - "&7Haz clic para ver y seleccionar"
     - "&7tus efectos de victoria."
+  flags:
+    - HIDE_ATTRIBUTES
 
+# Item de relleno para slots vacíos
 empty-button:
+  enabled: true          # pon 'false' para deshabilitar el relleno
   material: GRAY_STAINED_GLASS_PANE
   name: " "
+  flags:
+    - HIDE_ATTRIBUTES
+  # fill-slots: [0,1,2,...] — deja vacío o elimina esta línea para rellenar TODO
