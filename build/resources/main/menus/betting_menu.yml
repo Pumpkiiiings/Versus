@@ -1,0 +1,32 @@
+title: "&8Apuesta vs {opponent}"
+rows: 6
+
+separator:
+  material: BLACK_STAINED_GLASS_PANE
+  name: "&7-"
+
+ready-button:
+  ready:
+    material: GREEN_WOOL
+    name: "&a&l¡LISTO!"
+    lore:
+      - "&7Click para cambiar tu estado."
+  unready:
+    material: RED_WOOL
+    name: "&c&lNO LISTO"
+    lore:
+      - "&7Click para cambiar tu estado."
+
+money-button:
+  material: GOLD_INGOT
+  name: "&eDinero Apostado: &a${money}"
+  lore:
+    - "&7Click izquierdo: &a+$100"
+    - "&7Click derecho: &c-$100"
+
+xp-button:
+  material: EXPERIENCE_BOTTLE
+  name: "&bXP Apostada: &a{xp} niveles"
+  lore:
+    - "&7Click izquierdo: &a+1 nivel"
+    - "&7Click derecho: &c-1 nivel"

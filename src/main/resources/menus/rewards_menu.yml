@@ -1,0 +1,54 @@
+# ═══════════════════════════════════════════════
+#           REWARDS MENU — Versus Plugin
+# ═══════════════════════════════════════════════
+# Menú que muestra las recompensas de duelo pendientes.
+# Se abre con /duel rewards
+
+title: "&6⚔ &lRecompensas de Duelo &6⚔"
+menu-size: 6 # Tamaño del inventario en filas (1 a 6). 6 = Cofre doble.
+
+time-formats:
+  days: "d"
+  hours: "h"
+  minutes: "m"
+  expired: "Expirado"
+
+# Ícono que aparece cuando no hay recompensas
+empty-slot:
+  material: GRAY_STAINED_GLASS_PANE
+  name: "&7Sin recompensas pendientes"
+  lore:
+    - "&8No tienes recompensas por reclamar."
+
+# Ícono de cada recompensa pendiente
+reward-item:
+  material: GOLDEN_SWORD
+  name: "&6⚔ &lVICTORIA &7vs &c{loser}"
+  separator: "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  lore:
+    - "{separator}"
+    - "&7Ganador: &a{winner}"
+    - "&7Perdedor: &c{loser}"
+    - "&7Fecha: &e{date}"
+    - "&7Expira en: &c{expires_in}"
+    - "{separator}"
+    - "{money_line}"
+    - "{xp_line}"
+    - "{items_line}"
+    - "{separator}"
+    - "&a&l▶ Click para reclamar"
+  # Estas líneas se agregan solo si aplican
+  money-line: "&7Dinero: &6${amount}"
+  xp-line: "&7XP: &b{xp} niveles"
+  items-line: "&7Ítems: &f{count} tipo(s)"
+  # Formato de fecha (Java SimpleDateFormat)
+  date-format: "dd/MM/yyyy HH:mm"
+
+# Mensajes de acción (enviados al jugador)
+messages:
+  already-claimed: "&cEsta recompensa ya fue reclamada."
+  money-received: "&a+&6${amount} &arecibido."
+  xp-received: "&a+{xp} &bniveles de XP &arecibidos."
+  items-received: "&a¡Ítems apostados entregados!"
+  claimed-success: "&a¡Recompensa reclamada exitosamente!"
+  pending-notify: "&6¡Tienes recompensas pendientes! &eUsa &a/duel rewards &epara reclamarlas."

@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.3'
+}
+
+group   = 'me.robomonkey'
+version = '1.8.3'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    // Spigot / CraftBukkit
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    
+    // CodeMC (PacketEvents)
+    maven { url = 'https://repo.codemc.io/repository/maven-releases/' }
+
+    // PlaceholderAPI
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+
+    // JitPack  (SpiGUI, ItemsAdder API)
+    maven { url = 'https://jitpack.io' }
+
+    // ItemsAdder / LoneLibs
+    maven { url = 'https://www.matteodev.it/spigot/public/maven/' }
+
+    // Vault
+    maven { url = 'https://nexus.hc.to/content/repositories/pub_releases/' }
+}
+
+dependencies {
+    // Spigot API  (provided – not shaded)
+    compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
+
+    // PlaceholderAPI  (provided)
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+
+    // ItemsAdder  (provided)
+    compileOnly 'com.github.LoneDev6:api-itemsadder:3.6.1'
+
+    // LoneLibs  (provided – needed to compile ItemsAdder API)
+    compileOnly 'dev.lone:LoneLibs:1.0.58'
+
+    // Vault  (provided – soft-dependency)
+    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
+
+    // bStats  (shaded)
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
+
+    // SpiGUI  (shaded)
+    implementation 'com.github.samjakob:SpiGUI:v1.3.1'
+    
+    // H2 Database (shaded)
+    implementation 'com.h2database:h2:2.2.224'
+
+    // PacketEvents
+    implementation 'com.github.retrooper:packetevents-spigot:2.13.0'
+}
+
+processResources {
+    // Replaces ${project.version} in plugin.yml with the real version
+    filesMatching('plugin.yml') {
+        expand(['version': project.version])
+    }
+    filteringCharset = 'UTF-8'
+}
+
+shadowJar {
+    // Relocate bStats to avoid conflicts
+    relocate 'org.bstats', 'me.robomonkey.versus.libs.bstats'
+
+    // Relocate SpiGUI to avoid conflicts with other plugins
+    relocate 'com.samjakob.spigui', 'me.robomonkey.versus.libs.spigui'
+
+    // Relocate PacketEvents
+    relocate 'com.github.retrooper.packetevents', 'me.robomonkey.versus.libs.packetevents'
+    relocate 'io.github.retrooper.packetevents', 'me.robomonkey.versus.libs.packetevents.io'
+
+    archiveClassifier.set('')
+    archiveFileName.set("Versus-${project.version}.jar")
+}
+
+build.dependsOn shadowJar

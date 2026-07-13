@@ -1,0 +1,153 @@
+package me.robomonkey.versus.arena;
+
+import me.robomonkey.versus.duel.Duel;
+import me.robomonkey.versus.kit.Kit;
+import me.robomonkey.versus.kit.KitManager;
+import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Arena {
+    public static Arena empty = null;
+    private final String name;
+    private final List<Duel> activeDuels;
+    private Location spawnLocationOne;
+    private Location spawnLocationTwo;
+    private Location centerLocation;
+    private Location spectateLocation;
+    private boolean enabled = false;
+    private boolean shared = false;
+    private Kit kit;
+
+    /**
+     * <h1>Creates Arena.</h1>
+     * <p>Note: Arenas handle their own verification logic.</p>
+     *
+     * @param name
+     */
+    public Arena(String name) {
+        this.name = name;
+        this.activeDuels = new ArrayList<Duel>();
+        this.enabled = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Kit getKit() {
+        return kit;
+    }
+
+    public List<Duel> getActiveDuels() {
+        return activeDuels;
+    }
+
+    public Location getSpawnLocationOne() {
+        return spawnLocationOne;
+    }
+
+    public Location getSpawnLocationTwo() {
+        return spawnLocationTwo;
+    }
+
+    public Location getCenterLocation() {
+        return centerLocation;
+    }
+
+    public Location getSpectateLocation() {
+        return spectateLocation;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isAvailable() {
+        if (shared) return true;
+        return this.getActiveDuels().size() == 0;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+
+    private boolean isValid() {
+        return (spawnLocationOne != null
+                && spawnLocationTwo != null
+                && centerLocation != null
+                && spectateLocation != null);
+    }
+
+    public void setLocationProperty(ArenaProperty property, Location value) {
+        switch (property) {
+            case SPAWN_LOCATION_ONE:
+                spawnLocationOne = value;
+                break;
+            case SPAWN_LOCATION_TWO:
+                spawnLocationTwo = value;
+                break;
+            case SPECTATE_LOCATION:
+                spectateLocation = value;
+                break;
+            case CENTER_LOCATION:
+                centerLocation = value;
+                break;
+        }
+        verifySelf();
+    }
+
+    public void setKit(Kit kit) {
+        this.kit = kit;
+        verifySelf();
+    }
+
+    public void addDuel(Duel activeDuel) {
+        this.activeDuels.add(activeDuel);
+    }
+
+    public void removeDuel(Duel completedDuel) {
+        this.activeDuels.remove(completedDuel);
+    }
+
+    private void verifySelf() {
+        if (!isValid()) enabled = false;
+        else enabled = true;
+    }
+
+    public void saveToYaml(YamlConfiguration config) {
+        verifySelf();
+        config.set("name", this.name);
+        config.set("enabled", this.enabled);
+        config.set("shared", this.shared);
+        config.set("kit", this.kit != null ? this.kit.getName() : "Default");
+        config.set("spawnLocationOne", this.spawnLocationOne);
+        config.set("spawnLocationTwo", this.spawnLocationTwo);
+        config.set("centerLocation", this.centerLocation);
+        config.set("spectateLocation", this.spectateLocation);
+    }
+
+    public static Arena loadFromYaml(YamlConfiguration config) {
+        String name = config.getString("name");
+        Arena newArena = new Arena(name);
+        newArena.setLocationProperty(ArenaProperty.CENTER_LOCATION, config.getLocation("centerLocation"));
+        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, config.getLocation("spawnLocationOne"));
+        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, config.getLocation("spawnLocationTwo"));
+        newArena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, config.getLocation("spectateLocation"));
+        newArena.setKit(KitManager.getInstance().getKit(config.getString("kit", "Default")));
+        newArena.setShared(config.getBoolean("shared", false));
+        return newArena;
+    }
+
+}
+

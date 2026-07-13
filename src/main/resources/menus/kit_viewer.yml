@@ -1,0 +1,9 @@
+title: "Viendo {kit}"
+rows: 6
+
+exit-button:
+  slot: 49
+  material: BARRIER
+  name: "&c&lSalir"
+  lore:
+    - "&7Volver a la lista de kits."

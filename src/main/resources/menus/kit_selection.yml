@@ -1,0 +1,20 @@
+title: "Kits (Página {currentPage}/{maxPage})"
+rows: 2
+
+confirm-button:
+  material: LIME_STAINED_GLASS_PANE
+  name: "&a&lCONFIRMAR"
+  lore:
+    - "&7Confirma tu elección de kit."
+
+empty-button:
+  material: WHITE_STAINED_GLASS_PANE
+  name: " "
+
+kit-icon:
+  lore-selected: "&a&lSELECCIONADO"
+  lore-unselected: "&7NO SELECCIONADO"
+  lore-append:
+    - ""
+    - "&pHaz clic derecho&s para ver."
+    - "&pClic izquierdo &spara seleccionar &p{kit}&s!"
