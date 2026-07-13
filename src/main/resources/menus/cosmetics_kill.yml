@@ -1,28 +1,37 @@
 # ═══════════════════════════════════════════════
-#       MENÚ DE EFECTOS DE ASESINATO
+#     MENÚ DE EFECTOS DE ASESINATO
 # ═══════════════════════════════════════════════
 
-title: "&c☠ Efectos de Asesinato ☠"
-rows: 4  # 1-6 filas
+title: "&8Efectos de Asesinato"
+rows: 4   # 1-6 filas
 
+# ── Botón de regreso ────────────────────────────
 back-button:
-  slot: 31   # ajusta según el número de filas
+  slot: 31   # con rows:4 → última fila va de 27 a 35; centro = slot 31
   material: ARROW
   name: "&cVolver"
   lore:
-    - "&7Regresa al menú principal."
+    - "&7Regresa al menu principal."
   flags:
     - HIDE_ATTRIBUTES
 
-# Item de relleno (opcional)
+# ── Relleno de fondo ────────────────────────────
+# enabled: true  → activa el relleno
+# fill-slots     → slots específicos; comenta o elimina la línea para rellenar TODO lo vacío
+# Referencia de slots por fila (rows:4 = 36 slots totales):
+#   Fila 1 → slots  0.. 8
+#   Fila 2 → slots  9..17
+#   Fila 3 → slots 18..26
+#   Fila 4 → slots 27..35
 empty-button:
   enabled: true
   material: BLACK_STAINED_GLASS_PANE
   name: " "
   flags:
     - HIDE_ATTRIBUTES
-  # fill-slots: [27,28,29,30,32,33,34,35]   # solo la última fila; comenta para rellenar todo
+  fill-slots: [27,28,29,30,32,33,34,35]   # solo la fila 4 (barra inferior), dejando libre el botón de volver
 
+# ── Textos del lore de efectos ──────────────────
 effect-lore:
-  selected: "&a&l✔ SELECCIONADO"
-  unselected: "&7Haz clic para seleccionar"
+  selected: "&aSeleccionado"
+  unselected: "&7Clic para seleccionar"
