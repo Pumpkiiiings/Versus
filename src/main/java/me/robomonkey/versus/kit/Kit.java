@@ -54,7 +54,16 @@ public class Kit {
         this.displayItem = displayItem;
     }
 
-    public boolean equals(Kit kit) {
-        return kit != null && name.equals(kit.getName());
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Kit kit = (Kit) obj;
+        return name.equals(kit.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }
