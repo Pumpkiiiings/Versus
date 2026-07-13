@@ -84,7 +84,7 @@ public final class Versus extends JavaPlugin {
     }
 
     public static String color(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return me.robomonkey.versus.util.MessageUtil.color(message);
     }
 
     public static Versus getInstance() {
