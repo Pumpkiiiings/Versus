@@ -122,6 +122,8 @@ public class ArenaManager {
             Versus.log("There are no arenas in the arenas folder.");
             return;
         }
+        
+        arenaList.clear();
 
         for (File file : files) {
             try {

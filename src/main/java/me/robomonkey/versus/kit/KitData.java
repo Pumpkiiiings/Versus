@@ -28,6 +28,15 @@ public class KitData {
         return kitsData;
     }
 
+    public void reload() {
+        try {
+            kitsData.load(kitsFile);
+        } catch (Exception e) {
+            Versus.error("Failed to reload kits.yml");
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Returns whether a player is in a passive or active state. Returns false if no data is available.
      */

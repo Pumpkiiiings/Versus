@@ -52,8 +52,12 @@ public class DatabaseManager {
                     "wins INT DEFAULT 0, " +
                     "losses INT DEFAULT 0, " +
                     "current_streak INT DEFAULT 0, " +
-                    "best_streak INT DEFAULT 0" +
+                    "best_streak INT DEFAULT 0, " +
+                    "kill_effect VARCHAR(32) DEFAULT 'NONE', " +
+                    "victory_effect VARCHAR(32) DEFAULT 'NONE'" +
                     ")");
+            try { statement.execute("ALTER TABLE player_stats ADD COLUMN kill_effect VARCHAR(32) DEFAULT 'NONE'"); } catch (SQLException ignored) {}
+            try { statement.execute("ALTER TABLE player_stats ADD COLUMN victory_effect VARCHAR(32) DEFAULT 'NONE'"); } catch (SQLException ignored) {}
             statement.execute("CREATE TABLE IF NOT EXISTS duel_rewards (" +
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT, " +
                     "winner_uuid VARCHAR(36) NOT NULL, " +

@@ -21,6 +21,9 @@ public class ReloadCommand extends AbstractCommand {
     public void callCommand(CommandSender sender, String[] args) {
         sender.sendMessage(Settings.getMessage(Setting.ADMIN_RELOADING_CONFIG));
         Settings.getInstance().reloadConfig(() -> {
+            me.robomonkey.versus.util.MenuManager.getInstance().reloadMenus();
+            me.robomonkey.versus.kit.KitManager.getInstance().reload();
+            me.robomonkey.versus.arena.ArenaManager.getInstance().loadArenas();
             sender.sendMessage(Settings.getMessage(Setting.ADMIN_RELOADED_CONFIG));
         });
     }

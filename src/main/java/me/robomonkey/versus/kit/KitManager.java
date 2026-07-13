@@ -25,6 +25,11 @@ public class KitManager {
         return kitData.getAllKits();
     }
 
+    public void reload() {
+        kitData.reload();
+        verifyDefaultKit();
+    }
+
     public static ItemStack[] getDefaultItems() {
         ItemStack[] kitItems = new ItemStack[41];
         kitItems[0] = new ItemStack(Material.DIAMOND_AXE, 1);

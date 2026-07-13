@@ -32,7 +32,8 @@ public class RootDuelCommand extends RootCommand {
                 new ConfirmCommand(),
                 new StatsCommand(),
                 new LeaveCommand(),
-                new RewardsCommand());
+                new RewardsCommand(),
+                new CosmeticsCommand());
         setAutonomous(true);
         enforcePermissionRulesForChildren();
     }

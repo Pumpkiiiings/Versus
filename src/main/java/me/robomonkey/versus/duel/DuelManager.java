@@ -375,7 +375,7 @@ public class DuelManager {
                     }
                 }
                 
-                renderLossEffects(loser);
+                renderLossEffects(loser, winners);
                 extricateLoser(loser, duel);
             }
         }
@@ -512,12 +512,30 @@ public class DuelManager {
         if (duel.isVictoryEffectsEnabled() && duel.isFireworksEnabled()) {
             EffectUtil.spawnFireWorksDelayed(winner.getLocation(), 3, 20, 20L, duel.getFireworkColor());
         }
+
+        me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(winner);
+        if (stats != null) {
+            try {
+                me.robomonkey.versus.cosmetics.VictoryEffect eff = me.robomonkey.versus.cosmetics.VictoryEffect.valueOf(stats.getActiveVictoryEffect());
+                eff.play(winner.getLocation());
+            } catch (Exception ignored) {}
+        }
     }
 
-    private void renderLossEffects(Player loser) {
+    private void renderLossEffects(Player loser, List<UUID> winners) {
         loser.sendMessage(Settings.getMessage(Setting.DUEL_LOSS_MESSAGE, Placeholder.of("%player%", PAPIUtil.getName(loser))));
-        loser.getWorld().strikeLightningEffect(loser.getLocation());
-
+        if (!winners.isEmpty()) {
+            Player firstWinner = Bukkit.getPlayer(winners.get(0));
+            if (firstWinner != null) {
+                me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(firstWinner);
+                if (stats != null) {
+                    try {
+                        me.robomonkey.versus.cosmetics.KillEffect eff = me.robomonkey.versus.cosmetics.KillEffect.valueOf(stats.getActiveKillEffect());
+                        eff.play(loser.getLocation());
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
     }
 
 }
