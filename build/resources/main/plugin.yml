@@ -1,5 +1,5 @@
 name: Versus
-version: '1.8.3'
+version: '1.8.4'
 main: me.robomonkey.versus.Versus
 prefix: Versus
 api-version: 1.16

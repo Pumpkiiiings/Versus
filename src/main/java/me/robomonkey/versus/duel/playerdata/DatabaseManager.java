@@ -26,15 +26,18 @@ public class DatabaseManager {
 
     private void connect() {
         try {
-            // Load H2 driver explicitly in case it's not registered automatically
-            Class.forName("org.h2.Driver");
             File dataFolder = new File(Versus.getInstance().getDataFolder(), "data");
             if (!dataFolder.exists()) {
                 dataFolder.mkdirs();
             }
-            String url = "jdbc:h2:" + dataFolder.getAbsolutePath() + "/database";
-            connection = DriverManager.getConnection(url, "sa", "");
-        } catch (ClassNotFoundException | SQLException e) {
+            String path = dataFolder.getAbsolutePath().replace('\\', '/');
+            String url = "jdbc:h2:" + path + "/database";
+            
+            java.util.Properties props = new java.util.Properties();
+            props.put("user", "sa");
+            props.put("password", "");
+            connection = new org.h2.Driver().connect(url, props);
+        } catch (SQLException e) {
             Versus.error("Failed to connect to H2 Database!");
             e.printStackTrace();
         }
