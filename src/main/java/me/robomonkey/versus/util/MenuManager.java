@@ -41,6 +41,9 @@ public class MenuManager {
         loadMenu("rewards_menu.yml");
         loadMenu("arena_selection.yml");
         loadMenu("arena_kits.yml");
+        loadMenu("cosmetics_main.yml");
+        loadMenu("cosmetics_kill.yml");
+        loadMenu("cosmetics_victory.yml");
     }
 
     public void loadMenu(String fileName) {

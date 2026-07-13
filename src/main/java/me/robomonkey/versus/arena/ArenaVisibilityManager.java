@@ -24,9 +24,19 @@ public class ArenaVisibilityManager {
         for (Player other : Bukkit.getOnlinePlayers()) {
             if (p.equals(other)) continue;
             
-            // Re-show all players to undo any previous hiding
-            p.showPlayer(Versus.getInstance(), other);
-            other.showPlayer(Versus.getInstance(), p);
+            // Update viewer (p) seeing target (other)
+            if (canSee(p, other)) {
+                p.showPlayer(Versus.getInstance(), other);
+            } else {
+                p.hidePlayer(Versus.getInstance(), other);
+            }
+            
+            // Update target (other) seeing viewer (p)
+            if (canSee(other, p)) {
+                other.showPlayer(Versus.getInstance(), p);
+            } else {
+                other.hidePlayer(Versus.getInstance(), p);
+            }
         }
     }
 
@@ -36,29 +46,41 @@ public class ArenaVisibilityManager {
         }
     }
 
-    public static boolean shouldSee(Player p1, Player p2) {
-        Duel p1Duel = DuelManager.getInstance().getDuel(p1);
-        Duel p2Duel = DuelManager.getInstance().getDuel(p2);
-        Duel p1Spec = spectatorMap.get(p1.getUniqueId());
-        Duel p2Spec = spectatorMap.get(p2.getUniqueId());
+    public static boolean canSee(Player viewer, Player target) {
+        Duel viewerDuel = DuelManager.getInstance().getDuel(viewer);
+        Duel targetDuel = DuelManager.getInstance().getDuel(target);
+        Duel viewerSpec = spectatorMap.get(viewer.getUniqueId());
+        Duel targetSpec = spectatorMap.get(target.getUniqueId());
 
-        // Both in lobby (not dueling and not spectating)
-        if (p1Duel == null && p1Spec == null && p2Duel == null && p2Spec == null) return true;
+        // Target is spectating
+        if (targetSpec != null) {
+            // Viewer can only see the spectator if the viewer is ALSO spectating the SAME duel
+            if (viewerSpec != null && viewerSpec.equals(targetSpec)) {
+                return true;
+            }
+            return false;
+        }
 
-        // Both in the same active duel
-        if (p1Duel != null && p1Duel.equals(p2Duel)) return true;
+        // Viewer is spectating
+        if (viewerSpec != null) {
+            if (targetDuel != null && viewerSpec.equals(targetDuel)) {
+                return true;
+            }
+            return false;
+        }
 
-        // P1 is spectating P2's duel
-        if (p1Spec != null && p1Spec.equals(p2Duel)) return true;
-        
-        // P2 is spectating P1's duel
-        if (p2Spec != null && p2Spec.equals(p1Duel)) return true;
+        // Both are duelers
+        if (viewerDuel != null && targetDuel != null) {
+            return viewerDuel.equals(targetDuel);
+        }
 
-        // Both are spectating the same duel
-        if (p1Spec != null && p1Spec.equals(p2Spec)) return true;
+        // One is dueling, one is in lobby
+        if (viewerDuel != null || targetDuel != null) {
+            return false;
+        }
 
-        // Otherwise, they should not see each other
-        return false;
+        // Both in lobby
+        return true;
     }
 
     public static void addSpectator(Player player, Duel duel) {

@@ -1,0 +1,22 @@
+﻿title: "&8Menú de Cosméticos"
+rows: 3
+
+kill-button:
+  slot: 11
+  material: DIAMOND_SWORD
+  name: "&c&lEfectos de Asesinato"
+  lore:
+    - "&7Haz clic para ver y seleccionar"
+    - "&7tus efectos de asesinato."
+
+victory-button:
+  slot: 15
+  material: FIREWORK_ROCKET
+  name: "&b&lEfectos de Victoria"
+  lore:
+    - "&7Haz clic para ver y seleccionar"
+    - "&7tus efectos de victoria."
+
+empty-button:
+  material: GRAY_STAINED_GLASS_PANE
+  name: " "

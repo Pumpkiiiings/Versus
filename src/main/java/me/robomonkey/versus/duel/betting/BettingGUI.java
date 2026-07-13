@@ -172,7 +172,7 @@ public class BettingGUI implements Listener {
                     List<ItemStack> myItems = session.getItems(player.getUniqueId());
                     
                     if (myMoney <= 0 && myXp <= 0 && myItems.isEmpty()) {
-                        player.sendMessage(Versus.color("&cDebes apostar al menos algo (dinero, xp, o ítems)."));
+                        player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_BET_MINIMUM));
                         return;
                     }
                 }
@@ -196,7 +196,7 @@ public class BettingGUI implements Listener {
                     if (me.robomonkey.versus.dependency.EconomyManager.has(player, currentMoney + 100)) {
                         session.setMoney(player.getUniqueId(), currentMoney + 100);
                     } else {
-                        player.sendMessage(Versus.color("&cNo tienes suficiente dinero."));
+                        player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_NOT_ENOUGH_MONEY));
                     }
                 } else if (event.isRightClick()) {
                     session.setMoney(player.getUniqueId(), Math.max(0, currentMoney - 100));
@@ -212,7 +212,7 @@ public class BettingGUI implements Listener {
                     if (player.getLevel() >= currentXp + 1) {
                         session.setXp(player.getUniqueId(), currentXp + 1);
                     } else {
-                        player.sendMessage(Versus.color("&cNo tienes suficientes niveles de XP."));
+                        player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_BET_NOT_ENOUGH_XP));
                     }
                 } else if (event.isRightClick()) {
                     session.setXp(player.getUniqueId(), Math.max(0, currentXp - 1));
@@ -250,13 +250,13 @@ public class BettingGUI implements Listener {
                 // Check blacklist
                 List<String> blacklist = Settings.getInstance().getConfig().getStringList("dueling.bet_blacklist");
                 if (blacklist != null && blacklist.contains(event.getCurrentItem().getType().name())) {
-                    player.sendMessage(Versus.color("&cEse ítem está en la lista negra y no se puede apostar."));
+                    player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_BET_BLACKLISTED_ITEM));
                     return;
                 }
                 
                 List<ItemStack> items = session.getItems(player.getUniqueId());
                 if (items.size() >= 22) {
-                    player.sendMessage(Versus.color("&cNo puedes apostar más ítems."));
+                    player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_BET_MAX_ITEMS));
                     return;
                 }
                 items.add(event.getCurrentItem().clone());

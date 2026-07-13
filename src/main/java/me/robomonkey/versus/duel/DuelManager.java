@@ -516,8 +516,8 @@ public class DuelManager {
         me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(winner);
         if (stats != null) {
             try {
-                me.robomonkey.versus.cosmetics.VictoryEffect eff = me.robomonkey.versus.cosmetics.VictoryEffect.valueOf(stats.getActiveVictoryEffect());
-                eff.play(winner.getLocation());
+                me.robomonkey.versus.cosmetics.VictoryEffect eff = me.robomonkey.versus.cosmetics.CosmeticsManager.getInstance().getVictoryEffect(stats.getActiveVictoryEffect());
+                if (eff != null) eff.play(winner.getLocation());
             } catch (Exception ignored) {}
         }
     }
@@ -530,8 +530,8 @@ public class DuelManager {
                 me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(firstWinner);
                 if (stats != null) {
                     try {
-                        me.robomonkey.versus.cosmetics.KillEffect eff = me.robomonkey.versus.cosmetics.KillEffect.valueOf(stats.getActiveKillEffect());
-                        eff.play(loser.getLocation());
+                        me.robomonkey.versus.cosmetics.KillEffect eff = me.robomonkey.versus.cosmetics.CosmeticsManager.getInstance().getKillEffect(stats.getActiveKillEffect());
+                        if (eff != null) eff.play(loser.getLocation());
                     } catch (Exception ignored) {}
                 }
             }

@@ -48,7 +48,7 @@ public class DuelGroupAcceptDuel extends AbstractCommand {
         
         Party targetParty = pm.getParty(requesting);
         if (targetParty == null) {
-            player.sendMessage(MessageUtil.color("&cThat party no longer exists."));
+            player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.PARTY_DOES_NOT_EXIST));
             return;
         }
         

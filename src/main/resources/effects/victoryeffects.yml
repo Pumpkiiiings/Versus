@@ -1,0 +1,22 @@
+﻿# Configuración visual de efectos de victoria
+V_NONE:
+  name: "&cNinguno"
+  icon: BARRIER
+V_FIREWORKS:
+  name: "&bFuegos Artificiales"
+  icon: FIREWORK_ROCKET
+V_HEARTS:
+  name: "&cCorazones"
+  icon: POPPY
+V_FLAMES:
+  name: "&6Llamas"
+  icon: BLAZE_POWDER
+V_MUSIC:
+  name: "&dMúsica"
+  icon: MUSIC_DISC_PIGSTEP
+V_SOULS:
+  name: "&8Almas"
+  icon: SOUL_SAND
+V_DRAGON:
+  name: "&5Dragón"
+  icon: DRAGON_HEAD

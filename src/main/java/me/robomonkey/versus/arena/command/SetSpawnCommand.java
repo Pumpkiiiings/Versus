@@ -32,7 +32,7 @@ public class SetSpawnCommand extends AbstractCommand {
         settings.changeSetting(Setting.RETURN_LOSERS, "custom");
         
         settings.saveSettingsChanges(changed -> {
-            sender.sendMessage(MessageUtil.get("&pSuccessfully set the duel return spawn location to your current location!"));
+            sender.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ARENA_SPAWN_SET));
         });
     }
 

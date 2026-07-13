@@ -9,14 +9,15 @@ public class PlayerStats {
     private int losses;
     private int currentStreak;
     private int bestStreak;
-    private String activeKillEffect;
-    private String activeVictoryEffect;
+    private String activeKillEffect = "NONE";
+    private String activeVictoryEffect = "NONE";
+    private final java.util.Set<String> unlockedCosmetics = new java.util.HashSet<>();
 
     public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak) {
-        this(uuid, name, wins, losses, currentStreak, bestStreak, "NONE", "NONE");
+        this(uuid, name, wins, losses, currentStreak, bestStreak, "K_NONE", "V_NONE");
     }
 
-    public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect) {
+    public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect, String unlockedCosmeticsStr) {
         this.uuid = uuid;
         this.name = name;
         this.wins = wins;
@@ -25,6 +26,25 @@ public class PlayerStats {
         this.bestStreak = bestStreak;
         this.activeKillEffect = activeKillEffect;
         this.activeVictoryEffect = activeVictoryEffect;
+        if (unlockedCosmeticsStr != null && !unlockedCosmeticsStr.isEmpty()) {
+            this.unlockedCosmetics.addAll(java.util.Arrays.asList(unlockedCosmeticsStr.split(",")));
+        }
+    }
+
+    public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect) {
+        this(uuid, name, wins, losses, currentStreak, bestStreak, activeKillEffect, activeVictoryEffect, "");
+    }
+
+    public boolean hasCosmetic(String id) {
+        return unlockedCosmetics.contains(id);
+    }
+
+    public void unlockCosmetic(String id) {
+        unlockedCosmetics.add(id);
+    }
+
+    public String getUnlockedCosmeticsString() {
+        return String.join(",", unlockedCosmetics);
     }
 
     public UUID getUuid() { return uuid; }

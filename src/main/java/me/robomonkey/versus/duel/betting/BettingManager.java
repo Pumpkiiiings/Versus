@@ -112,8 +112,8 @@ public class BettingManager {
             returnItems(p1, session.getItems(session.getPlayer1()));
             returnItems(p2, session.getItems(session.getPlayer2()));
             
-            if (p1 != null) p1.sendMessage(me.robomonkey.versus.Versus.color("&cEl duelo fue cancelado."));
-            if (p2 != null) p2.sendMessage(me.robomonkey.versus.Versus.color("&cEl duelo fue cancelado."));
+            if (p1 != null) p1.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.BET_CANCELLED));
+            if (p2 != null) p2.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.BET_CANCELLED));
         }
     }
     

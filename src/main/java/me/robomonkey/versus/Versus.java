@@ -108,6 +108,7 @@ public final class Versus extends JavaPlugin {
         DatabaseManager.getInstance();
         me.robomonkey.versus.duel.rewards.RewardManager.getInstance().startCleanupTask();
         StatsManager.getInstance();
+        me.robomonkey.versus.cosmetics.CosmeticsManager.init();
         MenuManager.init(this);
         Settings.getInstance().registerConfig();
         spiGUI = new SpiGUI(this);

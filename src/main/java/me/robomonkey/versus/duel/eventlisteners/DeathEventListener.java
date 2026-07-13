@@ -14,7 +14,9 @@ public class DeathEventListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         // Safety net: if somehow a duelist dies for real, at least hide the message.
-        e.setDeathMessage("");
-        e.getDrops().clear();
+        if (me.robomonkey.versus.duel.DuelManager.getInstance().isDueling(e.getEntity())) {
+            e.setDeathMessage("");
+            e.getDrops().clear();
+        }
     }
 }

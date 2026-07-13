@@ -1,0 +1,12 @@
+﻿title: "&cEfectos de Asesinato"
+rows: 3
+
+back-button:
+  slot: 22
+  material: ARROW
+  name: "&cVolver"
+  lore: []
+
+effect-lore:
+  selected: "&a&lSELECCIONADO"
+  unselected: "&7Haz clic para seleccionar"

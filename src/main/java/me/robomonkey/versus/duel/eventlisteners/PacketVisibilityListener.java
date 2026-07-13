@@ -25,7 +25,15 @@ public class PacketVisibilityListener extends PacketListenerAbstract {
             int entityId = -1;
 
             if (event.getPacketType() == PacketType.Play.Server.SPAWN_ENTITY) {
-                entityId = new WrapperPlayServerSpawnEntity(event).getEntityId();
+                WrapperPlayServerSpawnEntity spawn = new WrapperPlayServerSpawnEntity(event);
+                entityId = spawn.getEntityId();
+                if (spawn.getUUID().isPresent()) {
+                    Player target = org.bukkit.Bukkit.getPlayer(spawn.getUUID().get());
+                    if (target != null && !ArenaVisibilityManager.canSee(receiver, target)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
             } else if (event.getPacketType() == PacketType.Play.Server.ENTITY_TELEPORT) {
                 entityId = new WrapperPlayServerEntityTeleport(event).getEntityId();
             } else if (event.getPacketType() == PacketType.Play.Server.ENTITY_VELOCITY) {
@@ -36,6 +44,18 @@ public class PacketVisibilityListener extends PacketListenerAbstract {
                 entityId = new WrapperPlayServerEntityStatus(event).getEntityId();
             } else if (event.getPacketType() == PacketType.Play.Server.ENTITY_SOUND_EFFECT) {
                 entityId = new WrapperPlayServerEntitySoundEffect(event).getEntityId();
+            } else if (event.getPacketType() == PacketType.Play.Server.PLAYER_INFO_UPDATE) {
+                com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate info = new com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate(event);
+                info.getEntries().removeIf(entry -> {
+                    Player target = org.bukkit.Bukkit.getPlayer(entry.getProfileId());
+                    return target != null && !ArenaVisibilityManager.canSee(receiver, target);
+                });
+                if (info.getEntries().isEmpty()) {
+                    event.setCancelled(true);
+                }
+                return;
+            } else if (event.getPacketType() == PacketType.Play.Server.PLAYER_INFO_REMOVE) {
+                // Do not intercept remove, let them be removed from tab list
             }
 
             if (entityId != -1) {

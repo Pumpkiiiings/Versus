@@ -66,7 +66,7 @@ public class DuelGroupDuel extends AbstractCommand {
                     return;
                 }
             } catch (NumberFormatException e) {
-                player.sendMessage(MessageUtil.color("&cInvalid bet amount."));
+                player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_NEGATIVE_BET));
                 return;
             }
         }

@@ -1,0 +1,22 @@
+﻿# Configuración visual de efectos de asesinato
+K_NONE:
+  name: "&cNinguno"
+  icon: BARRIER
+K_BLOOD:
+  name: "&cSangre"
+  icon: REDSTONE
+K_CONFETTI:
+  name: "&eConfeti"
+  icon: PAPER
+K_LIGHTNING:
+  name: "&bRayo"
+  icon: LIGHTNING_ROD
+K_EXPLOSION:
+  name: "&4Explosión"
+  icon: TNT
+K_SMOKE:
+  name: "&8Humo"
+  icon: CAMPFIRE
+K_MAGIC:
+  name: "&dMagia"
+  icon: ENCHANTED_BOOK

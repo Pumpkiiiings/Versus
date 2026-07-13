@@ -50,6 +50,10 @@ messages-general:
     error_invalid_setting: "&c'%setting%' no es una opción de configuración válida."
     error_invalid_setting_value: "&c'%option%' no es un valor de configuración adecuado. %setting% requiere un %type%."
     error_save_config: "&cError al guardar los cambios de configuración."
+    error_bet_minimum: "&cDebes apostar al menos algo (dinero, xp, o ítems)."
+    error_bet_not_enough_xp: "&cNo tienes suficientes niveles de XP."
+    error_bet_blacklisted_item: "&cEse ítem está en la lista negra y no se puede apostar."
+    error_bet_max_items: "&cNo puedes apostar más ítems."
     error_provide_kit: "&cPor favor, proporciona un nombre para el kit."
     error_kit_already_exists: "&c'%kit%' ya existe."
     error_specify_kit_to_load: "&cPor favor, especifica el kit a cargar."
@@ -114,6 +118,13 @@ dueling:
     rewards_gui_pending_notify: "&6¡Tienes recompensas pendientes! &eUsa &a/duel rewards &epara reclamarlas."
     rewards_gui_date_format: "dd/MM/yyyy HH:mm"
 
+cosmetics:
+  messages:
+    cosmetic_lore_free: "&a¡Gratis!"
+    cosmetic_lore_price: "&6Precio: &e$%price%"
+    cosmetic_lore_buy: "&aHaz clic para comprar"
+    cosmetic_bought_success: "&a¡Has comprado %cosmetic% por $%price%!"
+
 kit:
   messages:
     kit_saved: "&pHas guardado exitosamente &h%kit%&p. Usa &h/arena set&p para vincularlo a una arena."
@@ -125,6 +136,8 @@ arena:
     arena_created: "&pArena &h%arena%&p creada exitosamente."
     arena_deleted: "&pArena &h%arena%&p eliminada exitosamente."
     arena_teleported: "&pTeletransportando a &h%arena%&p..."
+    arena_spawn_set: "&p¡Punto de aparición establecido con éxito en tu ubicación actual!"
+    arena_no_arenas_list: "&sNo hay &parenas activas&s en este momento."
     arena_property_set: "&sSe ha establecido la propiedad %property% para %arena%."
     arena_edit_select_property: "%button% &spara seleccionar la propiedad"
     arena_edit_title: "&pEditando &h%arena%&p. &s[%button%&s]"

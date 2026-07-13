@@ -41,8 +41,9 @@ public class StatsManager {
                                 rs.getInt("losses"),
                                 rs.getInt("current_streak"),
                                 rs.getInt("best_streak"),
-                                rs.getString("kill_effect") == null ? "NONE" : rs.getString("kill_effect"),
-                                rs.getString("victory_effect") == null ? "NONE" : rs.getString("victory_effect")
+                                rs.getString("kill_effect") == null ? "K_NONE" : rs.getString("kill_effect"),
+                                rs.getString("victory_effect") == null ? "V_NONE" : rs.getString("victory_effect"),
+                                rs.getString("unlocked_cosmetics")
                         );
                         statsCache.put(player.getUniqueId(), stats);
                     } else {
@@ -69,7 +70,7 @@ public class StatsManager {
             try {
                 Connection conn = DatabaseManager.getInstance().getConnection();
                 try (PreparedStatement stmt = conn.prepareStatement(
-                        "MERGE INTO player_stats (uuid, name, wins, losses, current_streak, best_streak, kill_effect, victory_effect) KEY (uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "MERGE INTO player_stats (uuid, name, wins, losses, current_streak, best_streak, kill_effect, victory_effect, unlocked_cosmetics) KEY (uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     stmt.setString(1, stats.getUuid().toString());
                     stmt.setString(2, stats.getName());
                     stmt.setInt(3, stats.getWins());
@@ -78,6 +79,7 @@ public class StatsManager {
                     stmt.setInt(6, stats.getBestStreak());
                     stmt.setString(7, stats.getActiveKillEffect());
                     stmt.setString(8, stats.getActiveVictoryEffect());
+                    stmt.setString(9, stats.getUnlockedCosmeticsString());
                     stmt.executeUpdate();
                 }
             } catch (SQLException e) {

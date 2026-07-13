@@ -22,7 +22,7 @@ public class ListCommand extends AbstractCommand {
     @Override
     public void callCommand(CommandSender sender, String[] args) {
         if (ArenaManager.getInstance().getAllArenas().size() == 0) {
-            sender.sendMessage(MessageUtil.get("&sThere are no &pactive arenas&s currently."));
+            sender.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ARENA_NO_ARENAS_LIST));
             return;
         }
         sender.sendMessage(MessageUtil.LINE);

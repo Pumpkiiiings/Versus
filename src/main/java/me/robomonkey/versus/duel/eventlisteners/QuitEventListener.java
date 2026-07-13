@@ -18,5 +18,8 @@ public class QuitEventListener implements Listener {
         if (duelManager.isDueling(player)) {
             DuelManager.getInstance().registerQuitter(player);
         }
+        if (duelManager.isSpectating(player)) {
+            duelManager.removeSpectator(player);
+        }
     }
 }

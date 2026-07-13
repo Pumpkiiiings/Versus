@@ -43,7 +43,7 @@ public class ArenaBuilder {
     }
 
     private void finalizeArena() {
-        builder.sendMessage(MessageUtil.get("&pYou have completed the construction of the &h" + targetArena.getName() + "&p arena!"));
+        builder.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ARENA_CREATED, me.robomonkey.versus.settings.Placeholder.of("%arena%", targetArena.getName())));
         EffectUtil.playSound(builder, Sound.ENTITY_CAT_AMBIENT);
         EffectUtil.spawnFireWorks(builder.getLocation(), Settings.getColor(Setting.FIREWORKS_COLOR));
         ArenaManager.getInstance().addArena(targetArena);

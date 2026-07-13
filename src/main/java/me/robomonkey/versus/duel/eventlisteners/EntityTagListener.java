@@ -104,7 +104,7 @@ public class EntityTagListener implements Listener {
             // Manually play the break effect only to the players in the duel and spectators
             org.bukkit.Location loc = projectile.getLocation();
             for (Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
-                if (ArenaVisibilityManager.shouldSee(shooter, p)) {
+                if (ArenaVisibilityManager.canSee(shooter, p)) {
                     // Play effect (2002 is potion break)
                     p.playEffect(loc, Effect.POTION_BREAK, event.getPotion().getItem().getDurability());
                 }
