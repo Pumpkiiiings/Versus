@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Arena {
     public static Arena empty = null;
@@ -19,7 +20,7 @@ public class Arena {
     private Location spectateLocation;
     private boolean enabled = false;
     private boolean shared = false;
-    private Kit kit;
+    private List<Kit> kits = new ArrayList<>();
 
     /**
      * <h1>Creates Arena.</h1>
@@ -37,8 +38,20 @@ public class Arena {
         return name;
     }
 
-    public Kit getKit() {
-        return kit;
+    public List<Kit> getKits() {
+        return kits;
+    }
+
+    public void addKit(Kit kit) {
+        if (!kits.contains(kit)) {
+            kits.add(kit);
+        }
+        verifySelf();
+    }
+
+    public void removeKit(Kit kit) {
+        kits.remove(kit);
+        verifySelf();
     }
 
     public List<Duel> getActiveDuels() {
@@ -107,8 +120,8 @@ public class Arena {
         verifySelf();
     }
 
-    public void setKit(Kit kit) {
-        this.kit = kit;
+    public void setKits(List<Kit> kits) {
+        this.kits = kits;
         verifySelf();
     }
 
@@ -130,7 +143,12 @@ public class Arena {
         config.set("name", this.name);
         config.set("enabled", this.enabled);
         config.set("shared", this.shared);
-        config.set("kit", this.kit != null ? this.kit.getName() : "Default");
+        
+        List<String> kitNames = new ArrayList<>();
+        for (Kit k : this.kits) {
+            kitNames.add(k.getName());
+        }
+        config.set("kits", kitNames);
         config.set("spawnLocationOne", this.spawnLocationOne);
         config.set("spawnLocationTwo", this.spawnLocationTwo);
         config.set("centerLocation", this.centerLocation);
@@ -144,7 +162,27 @@ public class Arena {
         newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, config.getLocation("spawnLocationOne"));
         newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, config.getLocation("spawnLocationTwo"));
         newArena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, config.getLocation("spectateLocation"));
-        newArena.setKit(KitManager.getInstance().getKit(config.getString("kit", "Default")));
+        
+        List<String> kitNames = config.getStringList("kits");
+        List<Kit> loadedKits = new ArrayList<>();
+        if (kitNames != null && !kitNames.isEmpty()) {
+            for (String kitName : kitNames) {
+                Kit k = KitManager.getInstance().getKit(kitName);
+                if (k != null) loadedKits.add(k);
+            }
+        } else {
+            // Legacy support
+            String legacyKit = config.getString("kit");
+            if (legacyKit != null) {
+                Kit k = KitManager.getInstance().getKit(legacyKit);
+                if (k != null) loadedKits.add(k);
+            } else {
+                Kit k = KitManager.getInstance().getDefaultKit();
+                if (k != null) loadedKits.add(k);
+            }
+        }
+        newArena.setKits(loadedKits);
+        
         newArena.setShared(config.getBoolean("shared", false));
         return newArena;
     }

@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import me.robomonkey.versus.dependency.EconomyManager;
 import me.robomonkey.versus.arena.ArenaManager;
+import me.robomonkey.versus.arena.ArenaSelectionGUI;
+import me.robomonkey.versus.kit.KitSelectionGUI;
+import me.robomonkey.versus.arena.Arena;
 
 public class RootDuelCommand extends RootCommand {
 
@@ -77,13 +80,31 @@ public class RootDuelCommand extends RootCommand {
         String arenaName = null;
         if (args.length > 1) {
             arenaName = args[1];
-            if (ArenaManager.getInstance().getArena(arenaName) == null) {
+            Arena arena = ArenaManager.getInstance().getArena(arenaName);
+            if (arena == null) {
                 error(sender, Settings.getMessage(Setting.ERROR_ARENA_NOT_EXIST, new me.robomonkey.versus.settings.Placeholder("%arena%", arenaName)));
                 return;
             }
+            
+            // If arena is specified, open Kit Selection directly filtered to this arena's kits
+            KitSelectionGUI kitGUI = new KitSelectionGUI(player, arena.getKits(), (kit, whoClicked) -> {
+                requestManager.sendRequest(player, requested, 0.0, arena.getName(), kit);
+            });
+            kitGUI.open();
+        } else {
+            // Open Arena Selection GUI
+            ArenaSelectionGUI arenaGUI = new ArenaSelectionGUI(player, selectedArena -> {
+                List<me.robomonkey.versus.kit.Kit> allowedKits = selectedArena != null ? selectedArena.getKits() : null;
+                String finalArenaName = selectedArena != null ? selectedArena.getName() : null;
+                
+                // Then open Kit Selection GUI
+                KitSelectionGUI kitGUI = new KitSelectionGUI(player, allowedKits, (kit, whoClicked) -> {
+                    requestManager.sendRequest(player, requested, 0.0, finalArenaName, kit);
+                });
+                kitGUI.open();
+            });
+            arenaGUI.open();
         }
-
-        requestManager.sendRequest(player, requested, 0.0, arenaName);
     }
 
     @Override

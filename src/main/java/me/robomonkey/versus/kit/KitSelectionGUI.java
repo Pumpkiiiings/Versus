@@ -26,9 +26,15 @@ public class KitSelectionGUI {
     private Kit selectedKit;
     private SGMenu mainMenu;
     private SGButton EMPTY;
+    private List<Kit> allowedKits = null;
 
     public KitSelectionGUI(Player viewer, BiConsumer<Kit, Player> onSelect) {
+        this(viewer, null, onSelect);
+    }
+
+    public KitSelectionGUI(Player viewer, List<Kit> allowedKits, BiConsumer<Kit, Player> onSelect) {
         this.viewer = viewer;
+        this.allowedKits = allowedKits;
         FileConfiguration config = MenuManager.getInstance().getMenuConfig("kit_selection.yml");
         
         String empMatStr = config.getString("empty-button.material", "WHITE_STAINED_GLASS_PANE");
@@ -80,6 +86,7 @@ public class KitSelectionGUI {
     public void loadKits() {
         mainMenu.clearAllButStickiedSlots();
         kitManager.getAllKits().stream()
+                .filter(kit -> allowedKits == null || allowedKits.contains(kit))
                 .forEach(kit -> {
                     boolean selected = kit.equals(selectedKit);
                     mainMenu.addButton(getKitButton(kit, selected));

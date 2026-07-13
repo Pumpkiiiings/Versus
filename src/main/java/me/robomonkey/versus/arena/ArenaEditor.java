@@ -38,8 +38,9 @@ public class ArenaEditor {
 
     public static void changeArenaProperty(Arena targetArena, ArenaProperty property, Player player, Runnable after) {
         if (property == ArenaProperty.KIT) {
-            KitSelectionGUI kitGUI = new KitSelectionGUI(player, (kit, whoClicked) -> {
-                changeKit(targetArena, player, kit);
+            ArenaKitsGUI kitGUI = new ArenaKitsGUI(player, targetArena, () -> {
+                player.sendMessage(Settings.getMessage(Setting.ARENA_KIT_SET, 
+                        Placeholder.of("%kit%", "Múltiples"), Placeholder.of("%arena%", targetArena.getName())));
                 after.run();
             });
             kitGUI.open();
@@ -61,8 +62,9 @@ public class ArenaEditor {
 
     public static void changeArenaProperty(Arena targetArena, ArenaProperty property, Player player) {
         if (property == ArenaProperty.KIT) {
-            KitSelectionGUI kitGUI = new KitSelectionGUI(player, (kit, whoClicked) -> {
-                changeKit(targetArena, player, kit);
+            ArenaKitsGUI kitGUI = new ArenaKitsGUI(player, targetArena, () -> {
+                player.sendMessage(Settings.getMessage(Setting.ARENA_KIT_SET, 
+                        Placeholder.of("%kit%", "Múltiples"), Placeholder.of("%arena%", targetArena.getName())));
             });
             kitGUI.open();
             return;
@@ -80,7 +82,7 @@ public class ArenaEditor {
     }
 
     public static void changeKit(Arena arena, Player player, Kit kit) {
-        arena.setKit(kit);
+        arena.addKit(kit);
         player.sendMessage(Settings.getMessage(Setting.ARENA_KIT_SET, 
                 Placeholder.of("%kit%", kit.getName()), Placeholder.of("%arena%", arena.getName())));
     }

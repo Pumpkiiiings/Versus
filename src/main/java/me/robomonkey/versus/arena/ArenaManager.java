@@ -93,7 +93,10 @@ public class ArenaManager {
                     arena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, parseLocation(obj.getAsJsonObject("spectateLocation")));
                     
                     if (obj.has("enabled")) arena.setEnabled(obj.get("enabled").getAsBoolean());
-                    if (obj.has("kit")) arena.setKit(KitManager.getInstance().getKit(obj.get("kit").getAsString()));
+                    if (obj.has("kit")) {
+                        Kit legacyKit = KitManager.getInstance().getKit(obj.get("kit").getAsString());
+                        if (legacyKit != null) arena.addKit(legacyKit);
+                    }
                     
                     arenaList.add(arena);
                 }
@@ -185,7 +188,20 @@ public class ArenaManager {
     public void notifyKitSelection(Kit kit, Player whoClicked) {
         if (ArenaBuilderCoordinator.getInstance().hasArenaBuilder(whoClicked)) {
             ArenaBuilder builder = ArenaBuilderCoordinator.getInstance().getArenaBuilder(whoClicked);
-            builder.getTargetArena().setKit(kit);
+            builder.getTargetArena().addKit(kit);
+        }
+    }
+
+    public Arena getAvailableArenaForKit(Kit kit) {
+        List<Arena> availableArenas = getAvailableArenas().stream()
+                .filter(arena -> arena.getKits().contains(kit))
+                .collect(Collectors.toList());
+        if (availableArenas.size() > 0) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(availableArenas.size());
+            return availableArenas.get(randomIndex);
+        } else {
+            return null;
         }
     }
 }

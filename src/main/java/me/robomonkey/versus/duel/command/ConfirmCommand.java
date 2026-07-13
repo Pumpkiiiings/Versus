@@ -34,7 +34,7 @@ public class ConfirmCommand extends AbstractCommand {
         
         // Remove from pending and send the actual request
         requestManager.removePendingConfirmation(player);
-        requestManager.sendRequest(pending.getRequestingPlayer(), pending.getRequestedPlayer(), pending.getBetAmount(), pending.getRequestedArena());
+        requestManager.sendRequest(pending.getRequestingPlayer(), pending.getRequestedPlayer(), pending.getBetAmount(), pending.getRequestedArena(), pending.getRequestedKit());
     }
 
     @Override

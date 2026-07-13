@@ -11,6 +11,7 @@ public class Request {
     private Long timecode;
     private double betAmount = 0.0;
     private String requestedArena = null;
+    private me.robomonkey.versus.kit.Kit requestedKit = null;
     private boolean isGroup = false;
 
     public Request(UUID requested, UUID requesting) {
@@ -25,10 +26,15 @@ public class Request {
         this.timecode = System.currentTimeMillis();
     }
 
-    public Request(Player requested, Player requesting, double betAmount, String requestedArena) {
+    public Request(Player requested, Player requesting, double betAmount, String requestedArena, me.robomonkey.versus.kit.Kit requestedKit) {
         this(requested, requesting);
         this.betAmount = betAmount;
         this.requestedArena = requestedArena;
+        this.requestedKit = requestedKit;
+    }
+
+    public me.robomonkey.versus.kit.Kit getRequestedKit() {
+        return requestedKit;
     }
 
     public boolean isGroup() {

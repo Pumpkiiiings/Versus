@@ -55,7 +55,11 @@ public class RequestManager {
                 arena = ArenaManager.getInstance().getArena(latest.getRequestedArena());
             }
             if (arena == null) {
-                arena = ArenaManager.getInstance().getAvailableArena();
+                if (latest.getRequestedKit() != null) {
+                    arena = ArenaManager.getInstance().getAvailableArenaForKit(latest.getRequestedKit());
+                } else {
+                    arena = ArenaManager.getInstance().getAvailableArena();
+                }
             }
             // If the specific arena they want is not available, we wait
             if (arena == null || !ArenaManager.getInstance().getAvailableArenas().contains(arena)) {
@@ -67,13 +71,13 @@ public class RequestManager {
                 me.robomonkey.versus.party.Party p1 = me.robomonkey.versus.party.PartyManager.getInstance().getParty(latest.getRequestedPlayer());
                 me.robomonkey.versus.party.Party p2 = me.robomonkey.versus.party.PartyManager.getInstance().getParty(latest.getRequestingPlayer());
                 if (p1 != null && p2 != null) {
-                    DuelManager.getInstance().setupGroupDuel(p1.getOnlinePlayers(), p2.getOnlinePlayers(), arena, latest.getBetAmount());
+                    DuelManager.getInstance().setupGroupDuel(p1.getOnlinePlayers(), p2.getOnlinePlayers(), arena, latest.getBetAmount(), latest.getRequestedKit());
                 }
             } else {
                 if (latest.getBettingSession() != null) {
                     DuelManager.getInstance().registerDuel(java.util.List.of(latest.getRequestingPlayer()), java.util.List.of(latest.getRequestedPlayer()), latest.getBettingSession());
                 } else {
-                    DuelManager.getInstance().setupDuel(latest.getRequestedPlayer(), latest.getRequestingPlayer(), arena, latest.getBetAmount());
+                    DuelManager.getInstance().setupDuel(latest.getRequestedPlayer(), latest.getRequestingPlayer(), arena, latest.getBetAmount(), latest.getRequestedKit());
                 }
             }
         }
@@ -169,8 +173,8 @@ public class RequestManager {
         pendingConfirmations.remove(player.getUniqueId());
     }
 
-    public void sendRequest(Player requesting, Player requested, double betAmount, String arenaName) {
-        requestList.add(new Request(requested, requesting, betAmount, arenaName));
+    public void sendRequest(Player requesting, Player requested, double betAmount, String arenaName, me.robomonkey.versus.kit.Kit kit) {
+        requestList.add(new Request(requested, requesting, betAmount, arenaName, kit));
         String sentRequestMessage = Settings.getMessage(Setting.SENT_REQUEST, new Placeholder("%player%", PAPIUtil.getName(requested)));
         String requestNotification = Settings.getMessage(Setting.REQUEST_NOTIFICATION, new Placeholder("%player%", PAPIUtil.getName(requesting)));
         
@@ -216,7 +220,7 @@ public class RequestManager {
         removeRequest(requested, requester);
         
         // Open Betting GUI instead of instantly starting
-        me.robomonkey.versus.duel.betting.BettingManager.getInstance().startSession(requester, requested, currentRequest.getRequestedArena());
+        me.robomonkey.versus.duel.betting.BettingManager.getInstance().startSession(requester, requested, currentRequest.getRequestedArena(), currentRequest.getRequestedKit());
     }
 
     public void denyRequest(Player requested, Player requester) {

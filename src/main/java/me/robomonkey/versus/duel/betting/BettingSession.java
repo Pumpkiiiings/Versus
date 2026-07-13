@@ -14,6 +14,7 @@ public class BettingSession {
     private final UUID player1;
     private final UUID player2;
     private final String arenaName;
+    private final me.robomonkey.versus.kit.Kit kit;
 
     private double player1Money = 0;
     private double player2Money = 0;
@@ -27,15 +28,17 @@ public class BettingSession {
     private boolean player1Ready = false;
     private boolean player2Ready = false;
 
-    public BettingSession(Player player1, Player player2, String arenaName) {
+    public BettingSession(Player player1, Player player2, String arenaName, me.robomonkey.versus.kit.Kit kit) {
         this.player1 = player1.getUniqueId();
         this.player2 = player2.getUniqueId();
         this.arenaName = arenaName;
+        this.kit = kit;
     }
 
     public UUID getPlayer1() { return player1; }
     public UUID getPlayer2() { return player2; }
     public String getArenaName() { return arenaName; }
+    public me.robomonkey.versus.kit.Kit getKit() { return kit; }
 
     public Player getPlayer1Online() { return Bukkit.getPlayer(player1); }
     public Player getPlayer2Online() { return Bukkit.getPlayer(player2); }

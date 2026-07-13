@@ -72,7 +72,7 @@ public class KitManager {
         }
     }
 
-    Kit getDefaultKit() {
+    public Kit getDefaultKit() {
         return kitData.getKit("Default");
     }
 }

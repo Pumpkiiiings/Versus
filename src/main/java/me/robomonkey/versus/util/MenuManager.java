@@ -39,6 +39,8 @@ public class MenuManager {
         loadMenu("kit_viewer.yml");
         loadMenu("betting_menu.yml");
         loadMenu("rewards_menu.yml");
+        loadMenu("arena_selection.yml");
+        loadMenu("arena_kits.yml");
     }
 
     public void loadMenu(String fileName) {

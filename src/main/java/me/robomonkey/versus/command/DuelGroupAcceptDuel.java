@@ -91,7 +91,7 @@ public class DuelGroupAcceptDuel extends AbstractCommand {
         }
         
         rm.cancelQueue(player);
-        DuelManager.getInstance().setupGroupDuel(party.getOnlinePlayers(), targetParty.getOnlinePlayers(), arena, req.getBetAmount());
+        DuelManager.getInstance().setupGroupDuel(party.getOnlinePlayers(), targetParty.getOnlinePlayers(), arena, req.getBetAmount(), req.getRequestedKit());
     }
 
     @Override

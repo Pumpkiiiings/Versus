@@ -36,8 +36,9 @@ public class ListCommand extends AbstractCommand {
     public String getArenaDescription(Arena arena) {
         Location arenaLocation = arena.getCenterLocation();
         int arenaX = (int) arenaLocation.getX(), arenaY = (int) arenaLocation.getY(), arenaZ = (int) arenaLocation.getZ();
+        String kitNames = arena.getKits().isEmpty() ? "None" : arena.getKits().stream().map(me.robomonkey.versus.kit.Kit::getName).collect(java.util.stream.Collectors.joining(", "));
         return MessageUtil.color(
-                "&h" + arena.getName() + ": " + "&sX&p " + arenaX + " &sY&p " + arenaY + " &sZ&p " + arenaZ + " &sKit: &p" + arena.getKit().getName() + "\n"
+                "&h" + arena.getName() + ": " + "&sX&p " + arenaX + " &sY&p " + arenaY + " &sZ&p " + arenaZ + " &sKits: &p" + kitNames + "\n"
         );
     }
 

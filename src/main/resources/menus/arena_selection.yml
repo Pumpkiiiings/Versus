@@ -1,0 +1,17 @@
+title: "Seleccionar Arena"
+rows: 3
+
+random-arena-button:
+  material: NETHER_STAR
+  name: "&d&lArena Aleatoria"
+  lore:
+    - "&7Selecciona una arena disponible al azar."
+
+arena-icon:
+  material: PAPER
+  name: "&e&l{arena}"
+  lore:
+    - "&7Kits soportados: &f{kits}"
+    - "&7Disponible: {available}"
+  available-yes: "&aSí"
+  available-no: "&cNo"

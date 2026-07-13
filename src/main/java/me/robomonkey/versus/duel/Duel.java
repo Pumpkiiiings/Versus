@@ -35,13 +35,19 @@ public class Duel {
     private boolean blindnessEnabled = Settings.is(Setting.BLINDNESS_EFFECTS_ENABLED);
     private double betAmount = 0.0;
     private me.robomonkey.versus.duel.betting.BettingSession bettingSession = null;
+    private me.robomonkey.versus.kit.Kit kit;
 
-    public Duel(Arena arena, List<Player> team1, List<Player> team2) {
+    public Duel(Arena arena, List<Player> team1, List<Player> team2, me.robomonkey.versus.kit.Kit kit) {
         this.team1.addAll(team1);
         this.team2.addAll(team2);
         this.players.addAll(team1);
         this.players.addAll(team2);
         this.activeArena = arena;
+        this.kit = kit;
+    }
+
+    public me.robomonkey.versus.kit.Kit getKit() {
+        return kit;
     }
 
     public List<Player> getTeam1() {

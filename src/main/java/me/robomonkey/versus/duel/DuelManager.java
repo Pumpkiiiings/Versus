@@ -137,22 +137,22 @@ public class DuelManager {
     }
 
     public void setupDuel(Player playerOne, Player playerTwo) {
-        setupDuel(playerOne, playerTwo, arenaManager.getAvailableArena(), 0.0);
+        setupDuel(playerOne, playerTwo, arenaManager.getAvailableArena(), 0.0, me.robomonkey.versus.kit.KitManager.getInstance().getDefaultKit());
     }
     
-    public void setupDuel(Player playerOne, Player playerTwo, Arena arena, double betAmount) {
-        setupGroupDuel(List.of(playerOne), List.of(playerTwo), arena, betAmount);
+    public void setupDuel(Player playerOne, Player playerTwo, Arena arena, double betAmount, me.robomonkey.versus.kit.Kit kit) {
+        setupGroupDuel(List.of(playerOne), List.of(playerTwo), arena, betAmount, kit);
     }
 
-    public void setupGroupDuel(List<Player> team1, List<Player> team2, Arena arena, double betAmount) {
-        Duel newDuel = createNewDuel(team1, team2, arena);
+    public void setupGroupDuel(List<Player> team1, List<Player> team2, Arena arena, double betAmount, me.robomonkey.versus.kit.Kit kit) {
+        Duel newDuel = createNewDuel(team1, team2, arena, kit);
         newDuel.setBetAmount(betAmount);
         executeDuelSetup(newDuel, team1, team2);
     }
     
     public void registerDuel(List<Player> team1, List<Player> team2, me.robomonkey.versus.duel.betting.BettingSession session) {
         Arena arena = arenaManager.getArena(session.getArenaName());
-        Duel newDuel = createNewDuel(team1, team2, arena);
+        Duel newDuel = createNewDuel(team1, team2, arena, session.getKit());
         newDuel.setBettingSession(session);
         executeDuelSetup(newDuel, team1, team2);
     }
@@ -176,8 +176,10 @@ public class DuelManager {
 
     private void populateKits(Duel duel) {
         duel.getPlayers().forEach((player) -> {
-            Kit kit = duel.getArena().getKit();
-            player.getInventory().setContents(kit.getItems());
+            Kit kit = duel.getKit();
+            if (kit != null) {
+                player.getInventory().setContents(kit.getItems());
+            }
         });
     }
 
@@ -425,9 +427,9 @@ public class DuelManager {
         }
     }
 
-    private Duel createNewDuel(List<Player> team1, List<Player> team2, Arena arena) {
+    private Duel createNewDuel(List<Player> team1, List<Player> team2, Arena arena, Kit kit) {
         if (arena == null) arena = arenaManager.getAvailableArena();
-        Duel newDuel = new Duel(arena, team1, team2);
+        Duel newDuel = new Duel(arena, team1, team2, kit);
         addDuel(newDuel);
         arenaManager.registerDuel(arena, newDuel);
         return newDuel;

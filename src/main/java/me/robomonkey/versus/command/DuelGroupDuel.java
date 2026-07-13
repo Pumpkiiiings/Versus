@@ -71,7 +71,7 @@ public class DuelGroupDuel extends AbstractCommand {
             }
         }
         
-        Request req = new Request(target, player, betAmount, null);
+        Request req = new Request(target, player, betAmount, null, null);
         req.setGroup(true);
         RequestManager.getInstance().placeInQueue(req);
         

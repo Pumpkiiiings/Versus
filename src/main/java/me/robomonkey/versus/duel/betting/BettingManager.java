@@ -19,8 +19,8 @@ public class BettingManager {
         return instance;
     }
 
-    public void startSession(Player p1, Player p2, String arenaName) {
-        BettingSession session = new BettingSession(p1, p2, arenaName);
+    public void startSession(Player p1, Player p2, String arenaName, me.robomonkey.versus.kit.Kit kit) {
+        BettingSession session = new BettingSession(p1, p2, arenaName, kit);
         sessions.put(p1.getUniqueId(), session);
         sessions.put(p2.getUniqueId(), session);
         
@@ -101,7 +101,7 @@ public class BettingManager {
             if (queueIt) {
                 p1.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.NO_ARENAS_AVAILABLE));
                 p2.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.NO_ARENAS_AVAILABLE));
-                me.robomonkey.versus.duel.request.Request queuedReq = new me.robomonkey.versus.duel.request.Request(p2, p1, 0.0, session.getArenaName());
+                me.robomonkey.versus.duel.request.Request queuedReq = new me.robomonkey.versus.duel.request.Request(p2, p1, 0.0, session.getArenaName(), session.getKit());
                 queuedReq.setBettingSession(session);
                 me.robomonkey.versus.duel.request.RequestManager.getInstance().placeInQueue(queuedReq);
             } else {
