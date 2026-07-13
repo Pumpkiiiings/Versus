@@ -8,7 +8,7 @@ I designed Versus to work as a 1v1 dueling plugin for _everyone_. To do so, I de
 First type /arena create <your_arena>. Clickable text will appear instructing you how to proceed. Follow each prompt to setup the arena. When you complete setup, you'll be forced to pick a kit that already exists. If you wish to add another, type /arena savekit <your_kit>. Then you can bind example_kit to your_arena with /arena set kit <your_arena> and the simple GUI that follows. 
 
 
-## Features (New in 1.8.3!)
+## Features (New in 1.8.4!)
 * **Multi-Kits Per Arena:** Arenas can now support multiple kits.
 * **Interactive GUIs:** Flow through an interactive map and kit selection GUI before starting your duels!
 * **Party & Group Duels:** Team up with friends and challenge other parties.

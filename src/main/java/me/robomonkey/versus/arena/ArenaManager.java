@@ -101,12 +101,15 @@ public class ArenaManager {
                     arenaList.add(arena);
                 }
                 saveAllArenas(); // Save to YAML format
-                oldDataFile.renameTo(new File(plugin.getDataFolder(), "arena.json.old"));
+                boolean deleted = oldDataFile.delete();
+                if (!deleted) {
+                    oldDataFile.renameTo(new File(plugin.getDataFolder(), "arena.json.old"));
+                }
                 Versus.log("Migration completed successfully.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return;
+            arenaList.clear(); // Clear so the next block can load them from YAML normally
         }
 
         File arenasFolder = new File(plugin.getDataFolder(), "arenas");

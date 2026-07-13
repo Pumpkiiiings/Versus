@@ -113,7 +113,7 @@ public final class Versus extends JavaPlugin {
         spiGUI = new SpiGUI(this);
         duelManager = DuelManager.getInstance();
         arenaManager = ArenaManager.getInstance();
-        arenaManager.loadArenas();
+        Bukkit.getScheduler().runTask(this, () -> arenaManager.loadArenas());
         registerCommands();
         Dependencies.refresh(getServer());
         me.robomonkey.versus.dependency.EconomyManager.setup();

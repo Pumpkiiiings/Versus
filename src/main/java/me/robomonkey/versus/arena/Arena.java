@@ -158,10 +158,10 @@ public class Arena {
     public static Arena loadFromYaml(YamlConfiguration config) {
         String name = config.getString("name");
         Arena newArena = new Arena(name);
-        newArena.setLocationProperty(ArenaProperty.CENTER_LOCATION, config.getLocation("centerLocation"));
-        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, config.getLocation("spawnLocationOne"));
-        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, config.getLocation("spawnLocationTwo"));
-        newArena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, config.getLocation("spectateLocation"));
+        newArena.setLocationProperty(ArenaProperty.CENTER_LOCATION, (Location) config.get("centerLocation"));
+        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, (Location) config.get("spawnLocationOne"));
+        newArena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, (Location) config.get("spawnLocationTwo"));
+        newArena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, (Location) config.get("spectateLocation"));
         
         List<String> kitNames = config.getStringList("kits");
         List<Kit> loadedKits = new ArrayList<>();

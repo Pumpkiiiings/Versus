@@ -1,0 +1,19 @@
+title: "Editar Kits: {arena}"
+rows: 2
+
+empty-button:
+  material: WHITE_STAINED_GLASS_PANE
+  name: " "
+
+confirm-button:
+  material: LIME_STAINED_GLASS_PANE
+  name: "&a&lCONFIRMAR"
+  lore:
+    - "&7Haz click para guardar."
+
+kit-icon:
+  lore-selected: "&a&lSELECCIONADO"
+  lore-unselected: "&7NO SELECCIONADO"
+  lore-append:
+    - ""
+    - "&pHaz click &spara alternar!"
