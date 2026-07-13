@@ -18,6 +18,19 @@ public class ArenaVisibilityManager {
     // Tracks which duel a spectator is currently watching
     private static final Map<UUID, Duel> spectatorMap = new ConcurrentHashMap<>();
 
+    public static java.util.List<Player> getSpectators(Duel duel) {
+        java.util.List<Player> spectators = new java.util.ArrayList<>();
+        for (Map.Entry<UUID, Duel> entry : spectatorMap.entrySet()) {
+            if (entry.getValue().equals(duel)) {
+                Player p = Bukkit.getPlayer(entry.getKey());
+                if (p != null && p.isOnline()) {
+                    spectators.add(p);
+                }
+            }
+        }
+        return spectators;
+    }
+
     public static void updateVisibility(Player p) {
         if (p == null || !p.isOnline()) return;
         

@@ -102,12 +102,27 @@ public class Settings {
      * @return
      */
     public static Location getLocation(Setting setting) {
-        ConfigurationSection section = (ConfigurationSection) setting.getValue();
-        Double x = section.getDouble("x");
-        Double y = section.getDouble("y");
-        Double z = section.getDouble("z");
-        String worldName = section.getString("world");
-        if(worldName == null || z == null || y == null || z == null) {
+        Object value = setting.getValue();
+        Double x = null, y = null, z = null;
+        String worldName = null;
+
+        if (value instanceof org.bukkit.configuration.ConfigurationSection) {
+            org.bukkit.configuration.ConfigurationSection section = (org.bukkit.configuration.ConfigurationSection) value;
+            x = section.getDouble("x");
+            y = section.getDouble("y");
+            z = section.getDouble("z");
+            worldName = section.getString("world");
+        } else if (value instanceof java.util.Map) {
+            java.util.Map<?, ?> map = (java.util.Map<?, ?>) value;
+            try {
+                x = Double.valueOf(map.get("x").toString());
+                y = Double.valueOf(map.get("y").toString());
+                z = Double.valueOf(map.get("z").toString());
+                worldName = (String) map.get("world");
+            } catch (Exception ignored) {}
+        }
+
+        if(worldName == null || x == null || y == null || z == null) {
             Versus.error("Improperly formatted location at '"+setting.toString().toLowerCase()+"' in config.yml.");
             return null;
         }

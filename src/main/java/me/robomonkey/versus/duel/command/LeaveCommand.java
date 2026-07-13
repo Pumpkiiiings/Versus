@@ -50,7 +50,7 @@ public class LeaveCommand extends AbstractCommand {
 
         // Surrender / forfeit
         player.sendMessage(Settings.getMessage(Setting.DUEL_FORFEIT_MESSAGE));
-        duelManager.registerDuelistDeath(player, true);
+        duelManager.forfeitDuel(player);
     }
     
     @Override

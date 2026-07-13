@@ -24,6 +24,7 @@ public class RootSpectateCommand extends RootCommand {
         setPlayersOnly(true);
         setArgumentRequired(true);
         setMaxArguments(1);
+        addBranches(new SpectateLeaveCommand());
         enforcePermissionRulesForChildren();
     }
 

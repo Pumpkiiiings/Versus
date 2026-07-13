@@ -54,6 +54,22 @@ public class ArenaEditor {
             after.run();
             return;
         }
+        if (property == ArenaProperty.ALLOW_BLOCK_PLACEMENTS) {
+            boolean current = targetArena.getAllowBlockPlacements() != null ? targetArena.getAllowBlockPlacements() : false;
+            targetArena.setAllowBlockPlacements(!current);
+            String state = !current ? "enabled" : "disabled";
+            player.sendMessage(MessageUtil.color("&aBlock placements for " + targetArena.getName() + " set to " + state));
+            after.run();
+            return;
+        }
+        if (property == ArenaProperty.ALLOW_BLOCK_DESTRUCTION) {
+            boolean current = targetArena.getAllowBlockDestruction() != null ? targetArena.getAllowBlockDestruction() : false;
+            targetArena.setAllowBlockDestruction(!current);
+            String state = !current ? "enabled" : "disabled";
+            player.sendMessage(MessageUtil.color("&aBlock destruction for " + targetArena.getName() + " set to " + state));
+            after.run();
+            return;
+        }
         targetArena.setLocationProperty(property, player.getLocation());
         player.sendMessage(Settings.getMessage(Setting.ARENA_PROPERTY_SET, 
                 Placeholder.of("%property%", property.toFriendlyString()), Placeholder.of("%arena%", targetArena.getName())));
@@ -74,6 +90,20 @@ public class ArenaEditor {
             String state = targetArena.isShared() ? "enabled" : "disabled";
             player.sendMessage(Settings.getMessage(Setting.ARENA_SHARED_MODE_TOGGLED, 
                     Placeholder.of("%state%", state), Placeholder.of("%arena%", targetArena.getName())));
+            return;
+        }
+        if (property == ArenaProperty.ALLOW_BLOCK_PLACEMENTS) {
+            boolean current = targetArena.getAllowBlockPlacements() != null ? targetArena.getAllowBlockPlacements() : false;
+            targetArena.setAllowBlockPlacements(!current);
+            String state = !current ? "enabled" : "disabled";
+            player.sendMessage(MessageUtil.color("&aBlock placements for " + targetArena.getName() + " set to " + state));
+            return;
+        }
+        if (property == ArenaProperty.ALLOW_BLOCK_DESTRUCTION) {
+            boolean current = targetArena.getAllowBlockDestruction() != null ? targetArena.getAllowBlockDestruction() : false;
+            targetArena.setAllowBlockDestruction(!current);
+            String state = !current ? "enabled" : "disabled";
+            player.sendMessage(MessageUtil.color("&aBlock destruction for " + targetArena.getName() + " set to " + state));
             return;
         }
         targetArena.setLocationProperty(property, player.getLocation());

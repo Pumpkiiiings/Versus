@@ -18,13 +18,15 @@ public class BlockPlaceListener implements Listener {
         Player player = event.getPlayer();
         if (!DuelManager.getInstance().isDueling(player)) return;
 
-        if (!Settings.is(Setting.ALLOW_BLOCK_PLACEMENTS)) {
+        Duel duel = DuelManager.getInstance().getDuel(player);
+        if (duel == null || duel.getArena() == null) return;
+
+        if (!duel.getArena().canPlaceBlocks()) {
             event.setCancelled(true);
             return;
         }
 
         // Track the placed block so it can be removed when the duel ends
-        Duel duel = DuelManager.getInstance().getDuel(player);
         if (duel != null && duel.getArena() != null) {
             ArenaRollbackManager.getInstance().recordPlaced(
                     duel.getArena().getName(), event.getBlock());

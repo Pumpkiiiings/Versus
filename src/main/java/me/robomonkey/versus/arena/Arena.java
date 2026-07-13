@@ -20,6 +20,10 @@ public class Arena {
     private Location spectateLocation;
     private boolean enabled = false;
     private boolean shared = false;
+    private Location posOne;
+    private Location posTwo;
+    private Boolean allowBlockPlacements = null;
+    private Boolean allowBlockDestruction = null;
     private List<Kit> kits = new ArrayList<>();
 
     /**
@@ -95,6 +99,43 @@ public class Arena {
         this.shared = shared;
     }
 
+    public Location getPosOne() { return posOne; }
+    public Location getPosTwo() { return posTwo; }
+    public Boolean getAllowBlockPlacements() { return allowBlockPlacements; }
+    public void setAllowBlockPlacements(Boolean b) { this.allowBlockPlacements = b; }
+    public Boolean getAllowBlockDestruction() { return allowBlockDestruction; }
+    public void setAllowBlockDestruction(Boolean b) { this.allowBlockDestruction = b; }
+
+    public boolean hasBounds() {
+        return posOne != null && posTwo != null;
+    }
+
+    public boolean isInsideBounds(Location loc) {
+        if (!hasBounds()) return true;
+        if (!loc.getWorld().equals(posOne.getWorld())) return false;
+
+        double minX = Math.min(posOne.getX(), posTwo.getX());
+        double maxX = Math.max(posOne.getX(), posTwo.getX());
+        double minY = Math.min(posOne.getY(), posTwo.getY());
+        double maxY = Math.max(posOne.getY(), posTwo.getY());
+        double minZ = Math.min(posOne.getZ(), posTwo.getZ());
+        double maxZ = Math.max(posOne.getZ(), posTwo.getZ());
+
+        return loc.getX() >= minX && loc.getX() <= maxX &&
+               loc.getY() >= minY && loc.getY() <= maxY &&
+               loc.getZ() >= minZ && loc.getZ() <= maxZ;
+    }
+
+    public boolean canPlaceBlocks() {
+        if (allowBlockPlacements != null) return allowBlockPlacements;
+        return false;
+    }
+
+    public boolean canDestroyBlocks() {
+        if (allowBlockDestruction != null) return allowBlockDestruction;
+        return false;
+    }
+
     private boolean isValid() {
         return (spawnLocationOne != null
                 && spawnLocationTwo != null
@@ -115,6 +156,12 @@ public class Arena {
                 break;
             case CENTER_LOCATION:
                 centerLocation = value;
+                break;
+            case POS_ONE:
+                posOne = value;
+                break;
+            case POS_TWO:
+                posTwo = value;
                 break;
         }
         verifySelf();
@@ -153,6 +200,14 @@ public class Arena {
         config.set("spawnLocationTwo", this.spawnLocationTwo);
         config.set("centerLocation", this.centerLocation);
         config.set("spectateLocation", this.spectateLocation);
+        config.set("posOne", this.posOne);
+        config.set("posTwo", this.posTwo);
+        if (this.allowBlockPlacements != null) {
+            config.set("allowBlockPlacements", this.allowBlockPlacements);
+        }
+        if (this.allowBlockDestruction != null) {
+            config.set("allowBlockDestruction", this.allowBlockDestruction);
+        }
     }
 
     public static Arena loadFromYaml(YamlConfiguration config) {
@@ -184,6 +239,18 @@ public class Arena {
         newArena.setKits(loadedKits);
         
         newArena.setShared(config.getBoolean("shared", false));
+        if (config.contains("posOne")) {
+            newArena.setLocationProperty(ArenaProperty.POS_ONE, (Location) config.get("posOne"));
+        }
+        if (config.contains("posTwo")) {
+            newArena.setLocationProperty(ArenaProperty.POS_TWO, (Location) config.get("posTwo"));
+        }
+        if (config.contains("allowBlockPlacements")) {
+            newArena.setAllowBlockPlacements(config.getBoolean("allowBlockPlacements"));
+        }
+        if (config.contains("allowBlockDestruction")) {
+            newArena.setAllowBlockDestruction(config.getBoolean("allowBlockDestruction"));
+        }
         return newArena;
     }
 

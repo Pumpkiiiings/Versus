@@ -18,13 +18,15 @@ public class BlockBreakListener implements Listener {
         Player player = event.getPlayer();
         if (!DuelManager.getInstance().isDueling(player)) return;
 
-        if (!Settings.is(Setting.ALLOW_BLOCK_DESTRUCTION)) {
+        Duel duel = DuelManager.getInstance().getDuel(player);
+        if (duel == null || duel.getArena() == null) return;
+
+        if (!duel.getArena().canDestroyBlocks()) {
             event.setCancelled(true);
             return;
         }
 
         // Snapshot the block BEFORE it is removed so we can restore it after the duel
-        Duel duel = DuelManager.getInstance().getDuel(player);
         if (duel != null && duel.getArena() != null) {
             ArenaRollbackManager.getInstance().recordBroken(
                     duel.getArena().getName(), event.getBlock());

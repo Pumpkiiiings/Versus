@@ -57,6 +57,8 @@ public enum Setting {
     ERROR_NOT_DUELING("messages-general.errors", Type.STRING, FileType.MESSAGES),
     ERROR_DUEL_ALREADY_ENDED("messages-general.errors", Type.STRING, FileType.MESSAGES),
     ERROR_ALREADY_DEAD("messages-general.errors", Type.STRING, FileType.MESSAGES),
+    ERROR_NOT_SPECTATING("messages-general.errors", Type.STRING, FileType.MESSAGES),
+    ERROR_OUT_OF_BOUNDS("messages-general.errors", Type.STRING, FileType.MESSAGES),
 
     ADMIN_SAVING_CONFIG("messages-general.admin", Type.STRING, FileType.MESSAGES),
     ADMIN_SAVED_CONFIG("messages-general.admin", Type.STRING, FileType.MESSAGES),
@@ -143,6 +145,13 @@ public enum Setting {
     COSMETIC_LORE_BUY("cosmetics.messages", Type.STRING, FileType.MESSAGES),
     COSMETIC_BOUGHT_SUCCESS("cosmetics.messages", Type.STRING, FileType.MESSAGES),
 
+    PAGINATION_PREVIOUS_PAGE("menus.pagination", Type.STRING, FileType.MESSAGES),
+    PAGINATION_PREVIOUS_LORE("menus.pagination", Type.STRING, FileType.MESSAGES),
+    PAGINATION_CURRENT_PAGE("menus.pagination", Type.STRING, FileType.MESSAGES),
+    PAGINATION_CURRENT_LORE("menus.pagination", Type.STRING, FileType.MESSAGES),
+    PAGINATION_NEXT_PAGE("menus.pagination", Type.STRING, FileType.MESSAGES),
+    PAGINATION_NEXT_LORE("menus.pagination", Type.STRING, FileType.MESSAGES),
+
     RETURN_WINNERS("dueling.mechanics", Type.RETURNOPTIONS),
     WINNER_RETURN_LOCATION("dueling.mechanics", Type.LOCATION),
     INSTANT_RESPAWN("dueling.mechanics", Type.BOOLEAN),
@@ -150,9 +159,8 @@ public enum Setting {
     RETURN_LOSERS("dueling.mechanics", Type.RETURNOPTIONS),
     LOSER_RETURN_LOCATION("dueling.mechanics", Type.LOCATION),
     BLOCKED_COMMANDS("dueling.mechanics", Type.INVALID),
-    ALLOW_BLOCK_PLACEMENTS("dueling.mechanics", Type.BOOLEAN),
     COUNTDOWN_DURATION("dueling.mechanics", Type.NUMBER),
-    ALLOW_BLOCK_DESTRUCTION("dueling.mechanics", Type.BOOLEAN),
+    POST_DUEL_DELAY("dueling.mechanics", Type.NUMBER),
 
     ANNOUNCE_DUELS("dueling.announcements", Type.BOOLEAN),
     DUEL_START_ANNOUNCEMENT("dueling.announcements", Type.STRING, FileType.MESSAGES),

@@ -112,9 +112,11 @@ public final class Versus extends JavaPlugin {
         MenuManager.init(this);
         Settings.getInstance().registerConfig();
         spiGUI = new SpiGUI(this);
+        spiGUI.setDefaultToolbarBuilder(new me.robomonkey.versus.util.CustomPaginationBuilder());
         duelManager = DuelManager.getInstance();
         arenaManager = ArenaManager.getInstance();
         Bukkit.getScheduler().runTask(this, () -> arenaManager.loadArenas());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new me.robomonkey.versus.duel.BoundaryVisualizerTask(duelManager), 2L, 2L);
         registerCommands();
         Dependencies.refresh(getServer());
         me.robomonkey.versus.dependency.EconomyManager.setup();

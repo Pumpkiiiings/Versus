@@ -62,6 +62,19 @@ public class RootDuelCommand extends RootCommand {
         }
         if (requestManager.hasIncomingRequest(player)
                 && requestManager.isRequestedBy(requested, player)) {
+            
+            if (args.length > 1) {
+                String response = args[1].toLowerCase();
+                if (response.equals("no") || response.equals("deny") || response.equals("rechazar")) {
+                    requestManager.denyRequest(player, requested);
+                    return;
+                } else if (response.equals("si") || response.equals("yes") || response.equals("accept") || response.equals("aceptar")) {
+                    // fall through to accept
+                } else {
+                    // If it's something else, we probably still want to accept or maybe ignore
+                }
+            }
+            
             try {
                 RequestManager.getInstance().acceptSpecificRequest(player, requested);
             } catch (RequestManager.PlayerOfflineException e) {

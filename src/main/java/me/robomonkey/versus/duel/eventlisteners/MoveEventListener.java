@@ -13,7 +13,7 @@ public class MoveEventListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
-        if (duelManager.isDueling(player)) {
+        if (duelManager.isDueling(player) || duelManager.isSpectating(player)) {
             duelManager.registerMoveEvent(player, e);
         }
     }

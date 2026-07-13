@@ -41,6 +41,7 @@ public class DuelManager {
     private DataManager dataManager;
     private Versus plugin = Versus.getInstance();
     private HashMap<UUID, Location> spectatorLocations = new HashMap<>();
+    private HashMap<UUID, org.bukkit.GameMode> spectatorGameModes = new HashMap<>();
 
     private DuelManager() {
         instance = this;
@@ -73,7 +74,7 @@ public class DuelManager {
     }
 
     public void registerQuitter(Player quitter) {
-        quitter.setHealth(0);
+        forfeitDuel(quitter);
     }
 
     public boolean hasStoredData(Player player) {
@@ -216,8 +217,30 @@ public class DuelManager {
 
     public void registerMoveEvent(Player player, PlayerMoveEvent event) {
         Duel currentDuel = getDuel(player);
-        if (currentDuel.getState() == DuelState.COUNTDOWN && isMoving(event)) {
+        boolean isSpectator = false;
+        
+        if (currentDuel == null && isSpectating(player)) {
+            currentDuel = me.robomonkey.versus.arena.ArenaVisibilityManager.getSpectatingDuel(player);
+            isSpectator = true;
+        }
+
+        if (currentDuel == null) return;
+        
+        if (!isSpectator && currentDuel.getState() == DuelState.COUNTDOWN && isMoving(event)) {
             event.setCancelled(true);
+            return;
+        }
+
+        if ((isSpectator || currentDuel.isActive()) && currentDuel.getArena() != null && currentDuel.getArena().hasBounds()) {
+            if (!currentDuel.getArena().isInsideBounds(event.getTo())) {
+                org.bukkit.util.Vector dir = currentDuel.getArena().getCenterLocation().toVector()
+                        .subtract(event.getTo().toVector()).normalize().multiply(1.2);
+                dir.setY(0.4);
+                player.setVelocity(dir);
+
+                player.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ERROR_OUT_OF_BOUNDS));
+                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+            }
         }
     }
 
@@ -271,6 +294,30 @@ public class DuelManager {
                 // Force end the duel as a draw to prevent players getting stuck
                 registerDuelCompletion(new java.util.ArrayList<>(), currentDuel.getPlayers(), currentDuel);
             }
+        }
+    }
+
+    public void forfeitDuel(Player player) {
+        Duel currentDuel = getDuel(player);
+        if (currentDuel == null) return;
+
+        if (currentDuel.getState() == DuelState.COUNTDOWN) {
+            undoCountdown(currentDuel);
+        }
+
+        if (currentDuel.isActive()) {
+            List<Player> winningTeam;
+            List<Player> losingTeam;
+
+            if (currentDuel.getTeam1().contains(player)) {
+                winningTeam = currentDuel.getTeam2();
+                losingTeam = currentDuel.getTeam1();
+            } else {
+                winningTeam = currentDuel.getTeam1();
+                losingTeam = currentDuel.getTeam2();
+            }
+
+            registerDuelCompletion(winningTeam, losingTeam, currentDuel);
         }
     }
 
@@ -359,6 +406,7 @@ public class DuelManager {
                 }
                 
                 renderWinEffects(winner, duel);
+                winner.setInvulnerable(true);
             }
         }
         
@@ -382,6 +430,25 @@ public class DuelManager {
         
         announceDuelEnd(duel);
         
+        long delaySeconds = 0;
+        try {
+            delaySeconds = Settings.getNumber(Setting.POST_DUEL_DELAY);
+        } catch (Exception ignored) {}
+        
+        if (delaySeconds > 0) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> finishDuelCleanup(duel, winners), delaySeconds * 20L);
+        } else {
+            finishDuelCleanup(duel, winners);
+        }
+    }
+    
+    private void finishDuelCleanup(Duel duel, List<UUID> winners) {
+        for (UUID w : winners) {
+            Player winner = Bukkit.getPlayer(w);
+            if (winner != null) {
+                extricateWinner(winner, duel);
+            }
+        }
         // Return spectators & rollback arena
         ArenaRollbackManager.getInstance().rollback(duel.getArena().getName());
         returnSpectators(duel.getArena());
@@ -396,6 +463,8 @@ public class DuelManager {
     
     public void addSpectator(Player player, Duel duel) {
         spectatorLocations.put(player.getUniqueId(), player.getLocation());
+        spectatorGameModes.put(player.getUniqueId(), player.getGameMode());
+        player.setGameMode(org.bukkit.GameMode.SPECTATOR);
         player.teleport(duel.getArena().getSpectateLocation());
         me.robomonkey.versus.arena.ArenaVisibilityManager.addSpectator(player, duel);
     }
@@ -406,8 +475,10 @@ public class DuelManager {
     
     public void removeSpectator(Player player) {
         Location returnLoc = spectatorLocations.remove(player.getUniqueId());
+        org.bukkit.GameMode prevMode = spectatorGameModes.remove(player.getUniqueId());
         if (returnLoc != null) {
             player.teleport(returnLoc);
+            if (prevMode != null) player.setGameMode(prevMode);
             me.robomonkey.versus.arena.ArenaVisibilityManager.removeSpectator(player);
         }
     }
@@ -418,8 +489,10 @@ public class DuelManager {
             if (p.getWorld().equals(arena.getSpectateLocation().getWorld()) &&
                 p.getLocation().distanceSquared(arena.getSpectateLocation()) < 2500) { // 50 block radius
                 Location returnLoc = spectatorLocations.remove(p.getUniqueId());
+                org.bukkit.GameMode prevMode = spectatorGameModes.remove(p.getUniqueId());
                 if (returnLoc != null) {
                     p.teleport(returnLoc);
+                    if (prevMode != null) p.setGameMode(prevMode);
                     me.robomonkey.versus.arena.ArenaVisibilityManager.removeSpectator(p);
                 }
                 else p.teleport(p.getWorld().getSpawnLocation());
@@ -502,24 +575,32 @@ public class DuelManager {
     }
 
     private void renderWinEffects(Player winner, Duel duel) {
-        extricateWinner(winner, duel);
-        if (duel.isFireworksEnabled()) EffectUtil.spawnFireWorks(winner.getLocation(), 1, 50, duel.getFireworkColor());
+        boolean hasCustomEffect = false;
+        me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(winner);
+        if (stats != null) {
+            String effectId = stats.getActiveVictoryEffect();
+            if (effectId != null && !effectId.equals("V_NONE")) {
+                try {
+                    me.robomonkey.versus.cosmetics.VictoryEffect eff = me.robomonkey.versus.cosmetics.CosmeticsManager.getInstance().getVictoryEffect(effectId);
+                    if (eff != null) {
+                        eff.play(winner.getLocation());
+                        hasCustomEffect = true;
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+
+        if (!hasCustomEffect) {
+            if (duel.isFireworksEnabled()) EffectUtil.spawnFireWorks(winner.getLocation(), 1, 50, duel.getFireworkColor());
+            if (duel.isVictoryEffectsEnabled() && duel.isFireworksEnabled()) {
+                EffectUtil.spawnFireWorksDelayed(winner.getLocation(), 3, 20, 20L, duel.getFireworkColor());
+            }
+        }
+
         if (duel.isVictoryMusicEnabled()) EffectUtil.playSound(winner, duel.getVictorySong());
         winner.sendTitle(
                 Settings.getMessage(Setting.VICTORY_TITLE_MESSAGE),
                 Settings.getMessage(Setting.VICTORY_SUBTITLE_MESSAGE, Placeholder.of("%player%", PAPIUtil.getName(winner))), 20, 40, 20);
-        
-        if (duel.isVictoryEffectsEnabled() && duel.isFireworksEnabled()) {
-            EffectUtil.spawnFireWorksDelayed(winner.getLocation(), 3, 20, 20L, duel.getFireworkColor());
-        }
-
-        me.robomonkey.versus.duel.playerdata.PlayerStats stats = StatsManager.getInstance().getStats(winner);
-        if (stats != null) {
-            try {
-                me.robomonkey.versus.cosmetics.VictoryEffect eff = me.robomonkey.versus.cosmetics.CosmeticsManager.getInstance().getVictoryEffect(stats.getActiveVictoryEffect());
-                if (eff != null) eff.play(winner.getLocation());
-            } catch (Exception ignored) {}
-        }
     }
 
     private void renderLossEffects(Player loser, List<UUID> winners) {

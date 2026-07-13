@@ -6,7 +6,11 @@ public enum ArenaProperty {
     SPAWN_LOCATION_TWO("second spawn location"),
     SPECTATE_LOCATION("location for spectators"),
     KIT("kit for players"),
-    SHARED("packet-based sharing mode");
+    SHARED("packet-based sharing mode"),
+    POS_ONE("first boundary position"),
+    POS_TWO("second boundary position"),
+    ALLOW_BLOCK_PLACEMENTS("allow block placements"),
+    ALLOW_BLOCK_DESTRUCTION("allow block destruction");
 
 
     private String friendlyString;
@@ -27,6 +31,16 @@ public enum ArenaProperty {
                 return KIT;
             case KIT:
                 return SHARED;
+            case SHARED:
+                return POS_ONE;
+            case POS_ONE:
+                return POS_TWO;
+            case POS_TWO:
+                return ALLOW_BLOCK_PLACEMENTS;
+            case ALLOW_BLOCK_PLACEMENTS:
+                return ALLOW_BLOCK_DESTRUCTION;
+            case ALLOW_BLOCK_DESTRUCTION:
+                return null;
             default:
                 return null;
         }
@@ -47,6 +61,14 @@ public enum ArenaProperty {
                 return "This determines the inventory players will have upon entering a duel in this arena.";
             case SHARED:
                 return "Toggles whether this arena can hold multiple packet-based duels at the same time.";
+            case POS_ONE:
+                return "Select the first corner of the arena boundary.";
+            case POS_TWO:
+                return "Select the second corner of the arena boundary.";
+            case ALLOW_BLOCK_PLACEMENTS:
+                return "Toggles whether blocks can be placed during a duel in this arena.";
+            case ALLOW_BLOCK_DESTRUCTION:
+                return "Toggles whether blocks can be destroyed during a duel in this arena.";
             default:
                 return "";
         }
