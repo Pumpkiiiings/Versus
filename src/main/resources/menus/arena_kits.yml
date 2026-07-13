@@ -1,19 +1,34 @@
-title: "Editar Kits: {arena}"
+# ═══════════════════════════════════════════════
+#       MENÚ DE KITS DE ARENA — Versus Plugin
+# ═══════════════════════════════════════════════
+# Referencia de slots (rows: 2 = 18 slots totales):
+#   Fila 1 → slots  0.. 8   (kits disponibles)
+#   Fila 2 → slots  9..17   (controles: confirmar, vacío)
+
+title: "&8Kits: {arena}"
 rows: 2
 
+# ── Relleno de fondo ────────────────────────────
 empty-button:
   material: WHITE_STAINED_GLASS_PANE
   name: " "
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Botón de confirmación ───────────────────────
+# slot sugerido: 13 (centro de la fila 2)
 confirm-button:
   material: LIME_STAINED_GLASS_PANE
-  name: "&a&lCONFIRMAR"
+  name: "&aConfirmar"
   lore:
-    - "&7Haz click para guardar."
+    - "&7Haz clic para guardar."
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Ícono de kit ─────────────────────────────────
 kit-icon:
-  lore-selected: "&a&lSELECCIONADO"
-  lore-unselected: "&7NO SELECCIONADO"
+  lore-selected: "&aSeleccionado"
+  lore-unselected: "&7No seleccionado"
   lore-append:
     - ""
-    - "&pHaz click &spara alternar!"
+    - "&7Haz clic para alternar!"

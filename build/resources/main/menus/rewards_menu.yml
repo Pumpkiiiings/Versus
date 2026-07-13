@@ -1,11 +1,20 @@
 # ═══════════════════════════════════════════════
-#           REWARDS MENU — Versus Plugin
+#       MENÚ DE RECOMPENSAS — Versus Plugin
 # ═══════════════════════════════════════════════
 # Menú que muestra las recompensas de duelo pendientes.
 # Se abre con /duel rewards
+#
+# Referencia de slots (menu-size: 6 = 54 slots totales):
+#   Fila 1 → slots  0.. 8
+#   Fila 2 → slots  9..17
+#   Fila 3 → slots 18..26
+#   Fila 4 → slots 27..35
+#   Fila 5 → slots 36..44
+#   Fila 6 → slots 45..53
+# Las recompensas se colocan en orden de arriba a abajo, izquierda a derecha.
 
-title: "&6⚔ &lRecompensas de Duelo &6⚔"
-menu-size: 6 # Tamaño del inventario en filas (1 a 6). 6 = Cofre doble.
+title: "&8Recompensas de Duelo"
+menu-size: 6   # filas del inventario (1-6)
 
 time-formats:
   days: "d"
@@ -13,17 +22,19 @@ time-formats:
   minutes: "m"
   expired: "Expirado"
 
-# Ícono que aparece cuando no hay recompensas
+# ── Slot vacío (sin recompensas) ─────────────────
 empty-slot:
   material: GRAY_STAINED_GLASS_PANE
   name: "&7Sin recompensas pendientes"
   lore:
     - "&8No tienes recompensas por reclamar."
+  flags:
+    - HIDE_ATTRIBUTES
 
-# Ícono de cada recompensa pendiente
+# ── Ícono de cada recompensa pendiente ───────────
 reward-item:
   material: GOLDEN_SWORD
-  name: "&6⚔ &lVICTORIA &7vs &c{loser}"
+  name: "&6Victoria &7vs &c{loser}"
   separator: "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
   lore:
     - "{separator}"
@@ -36,19 +47,21 @@ reward-item:
     - "{xp_line}"
     - "{items_line}"
     - "{separator}"
-    - "&a&l▶ Click para reclamar"
-  # Estas líneas se agregan solo si aplican
+    - "&a▶ Clic para reclamar"
+  # Estas lineas se agregan solo si aplican
   money-line: "&7Dinero: &6${amount}"
   xp-line: "&7XP: &b{xp} niveles"
-  items-line: "&7Ítems: &f{count} tipo(s)"
+  items-line: "&7Items: &f{count} tipo(s)"
   # Formato de fecha (Java SimpleDateFormat)
   date-format: "dd/MM/yyyy HH:mm"
+  flags:
+    - HIDE_ATTRIBUTES
 
-# Mensajes de acción (enviados al jugador)
+# ── Mensajes de accion (enviados al jugador) ─────
 messages:
   already-claimed: "&cEsta recompensa ya fue reclamada."
   money-received: "&a+&6${amount} &arecibido."
   xp-received: "&a+{xp} &bniveles de XP &arecibidos."
-  items-received: "&a¡Ítems apostados entregados!"
-  claimed-success: "&a¡Recompensa reclamada exitosamente!"
-  pending-notify: "&6¡Tienes recompensas pendientes! &eUsa &a/duel rewards &epara reclamarlas."
+  items-received: "&aItems apostados entregados!"
+  claimed-success: "&aRecompensa reclamada exitosamente!"
+  pending-notify: "&6Tienes recompensas pendientes! &eUsa &a/duel rewards &epara reclamarlas."

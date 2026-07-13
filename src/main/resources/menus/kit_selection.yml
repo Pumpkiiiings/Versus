@@ -1,20 +1,35 @@
-title: "Kits (Página {currentPage}/{maxPage})"
+# ═══════════════════════════════════════════════
+#     MENÚ DE SELECCIÓN DE KIT — Versus Plugin
+# ═══════════════════════════════════════════════
+# Referencia de slots (rows: 2 = 18 slots totales):
+#   Fila 1 → slots  0.. 8   (kits disponibles, paginados)
+#   Fila 2 → slots  9..17   (controles: confirmar, vacío)
+# slot sugerido confirmar: 13 (centro de fila 2)
+
+title: "&8Kits (Pagina {currentPage}/{maxPage})"
 rows: 2
 
+# ── Botón de confirmación ───────────────────────
 confirm-button:
   material: LIME_STAINED_GLASS_PANE
-  name: "&a&lCONFIRMAR"
+  name: "&aConfirmar"
   lore:
-    - "&7Confirma tu elección de kit."
+    - "&7Confirma tu eleccion de kit."
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Relleno de fondo ────────────────────────────
 empty-button:
   material: WHITE_STAINED_GLASS_PANE
   name: " "
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Ícono de cada kit ────────────────────────────
 kit-icon:
-  lore-selected: "&a&lSELECCIONADO"
-  lore-unselected: "&7NO SELECCIONADO"
+  lore-selected: "&aSeleccionado"
+  lore-unselected: "&7No seleccionado"
   lore-append:
     - ""
-    - "&pHaz clic derecho&s para ver."
-    - "&pClic izquierdo &spara seleccionar &p{kit}&s!"
+    - "&7Clic derecho para ver."
+    - "&7Clic izquierdo para seleccionar {kit}!"

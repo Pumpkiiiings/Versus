@@ -1,9 +1,26 @@
-title: "Viendo {kit}"
+# ═══════════════════════════════════════════════
+#       VISOR DE KIT — Versus Plugin
+# ═══════════════════════════════════════════════
+# Referencia de slots (rows: 6 = 54 slots totales):
+#   Fila 1 → slots  0.. 8
+#   Fila 2 → slots  9..17
+#   Fila 3 → slots 18..26
+#   Fila 4 → slots 27..35
+#   Fila 5 → slots 36..44
+#   Fila 6 → slots 45..53
+# El inventario del kit ocupa las filas 1-4 (slots 0-35).
+# La barra de control es la fila 6 (slots 45-53).
+
+title: "&8Viendo {kit}"
 rows: 6
 
+# ── Botón de salida ──────────────────────────────
+# slot 49 = centro de la fila 6
 exit-button:
   slot: 49
   material: BARRIER
-  name: "&c&lSalir"
+  name: "&cSalir"
   lore:
     - "&7Volver a la lista de kits."
+  flags:
+    - HIDE_ATTRIBUTES

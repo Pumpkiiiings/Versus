@@ -1,32 +1,57 @@
+# ═══════════════════════════════════════════════
+#       MENÚ DE APUESTAS — Versus Plugin
+# ═══════════════════════════════════════════════
+# Referencia de slots (rows: 6 = 54 slots totales):
+#   Fila 1 → slots  0.. 8
+#   Fila 2 → slots  9..17
+#   Fila 3 → slots 18..26
+#   Fila 4 → slots 27..35
+#   Fila 5 → slots 36..44
+#   Fila 6 → slots 45..53
+
 title: "&8Apuesta vs {opponent}"
 rows: 6
 
+# ── Separador de fondo ──────────────────────────
 separator:
   material: BLACK_STAINED_GLASS_PANE
-  name: "&7-"
+  name: " "
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Botón de estado (listo / no listo) ──────────
 ready-button:
   ready:
     material: GREEN_WOOL
-    name: "&a&l¡LISTO!"
+    name: "&aListo"
     lore:
-      - "&7Click para cambiar tu estado."
+      - "&7Clic para cambiar tu estado."
+    flags:
+      - HIDE_ATTRIBUTES
   unready:
     material: RED_WOOL
-    name: "&c&lNO LISTO"
+    name: "&cNo listo"
     lore:
-      - "&7Click para cambiar tu estado."
+      - "&7Clic para cambiar tu estado."
+    flags:
+      - HIDE_ATTRIBUTES
 
+# ── Botón de dinero apostado ─────────────────────
 money-button:
   material: GOLD_INGOT
   name: "&eDinero Apostado: &a${money}"
   lore:
-    - "&7Click izquierdo: &a+$100"
-    - "&7Click derecho: &c-$100"
+    - "&7Clic izquierdo: &a+$100"
+    - "&7Clic derecho: &c-$100"
+  flags:
+    - HIDE_ATTRIBUTES
 
+# ── Botón de XP apostada ─────────────────────────
 xp-button:
   material: EXPERIENCE_BOTTLE
   name: "&bXP Apostada: &a{xp} niveles"
   lore:
-    - "&7Click izquierdo: &a+1 nivel"
-    - "&7Click derecho: &c-1 nivel"
+    - "&7Clic izquierdo: &a+1 nivel"
+    - "&7Clic derecho: &c-1 nivel"
+  flags:
+    - HIDE_ATTRIBUTES
