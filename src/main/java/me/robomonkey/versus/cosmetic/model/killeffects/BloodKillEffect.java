@@ -10,6 +10,6 @@ public class BloodKillEffect extends KillEffect {
     }
     @Override
     public void play(Location location) {
-        location.getWorld().spawnParticle(org.bukkit.Particle.BLOCK_CRACK, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0, org.bukkit.Bukkit.createBlockData(org.bukkit.Material.REDSTONE_BLOCK));
+        location.getWorld().spawnParticle(org.bukkit.Particle.BLOCK, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0, org.bukkit.Bukkit.createBlockData(org.bukkit.Material.REDSTONE_BLOCK));
     }
 }

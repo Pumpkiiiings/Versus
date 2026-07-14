@@ -10,6 +10,6 @@ public class MagicKillEffect extends KillEffect {
     }
     @Override
     public void play(Location location) {
-        location.getWorld().spawnParticle(org.bukkit.Particle.ENCHANTMENT_TABLE, location.clone().add(0, 1, 0), 100, 0.5, 1, 0.5, 0.5); location.getWorld().playSound(location, org.bukkit.Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+        location.getWorld().spawnParticle(org.bukkit.Particle.ENCHANT, location.clone().add(0, 1, 0), 100, 0.5, 1, 0.5, 0.5); location.getWorld().playSound(location, org.bukkit.Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
     }
 }

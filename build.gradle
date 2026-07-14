@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
     // Spigot API  (provided – not shaded)
-    compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
 
     // PlaceholderAPI  (provided)
     compileOnly 'me.clip:placeholderapi:2.11.6'

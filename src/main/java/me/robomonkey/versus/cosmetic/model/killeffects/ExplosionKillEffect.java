@@ -10,6 +10,6 @@ public class ExplosionKillEffect extends KillEffect {
     }
     @Override
     public void play(Location location) {
-        location.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_NORMAL, location, 1); location.getWorld().playSound(location, org.bukkit.Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+        location.getWorld().spawnParticle(org.bukkit.Particle.POOF, location, 1); location.getWorld().playSound(location, org.bukkit.Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
     }
 }

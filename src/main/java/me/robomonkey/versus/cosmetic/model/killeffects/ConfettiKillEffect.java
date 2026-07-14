@@ -10,6 +10,6 @@ public class ConfettiKillEffect extends KillEffect {
     }
     @Override
     public void play(Location location) {
-        location.getWorld().spawnParticle(org.bukkit.Particle.ITEM_CRACK, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.YELLOW_DYE)); location.getWorld().spawnParticle(org.bukkit.Particle.ITEM_CRACK, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.BLUE_DYE)); location.getWorld().spawnParticle(org.bukkit.Particle.ITEM_CRACK, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.RED_DYE));
+        location.getWorld().spawnParticle(org.bukkit.Particle.ITEM, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.YELLOW_DYE)); location.getWorld().spawnParticle(org.bukkit.Particle.ITEM, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.BLUE_DYE)); location.getWorld().spawnParticle(org.bukkit.Particle.ITEM, location.clone().add(0, 1, 0), 50, 0.5, 0.5, 0.5, 0.1, new org.bukkit.inventory.ItemStack(org.bukkit.Material.RED_DYE));
     }
 }

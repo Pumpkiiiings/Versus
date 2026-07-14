@@ -97,7 +97,7 @@ public class BoundaryVisualizerTask implements Runnable {
                     double dot = eyeDir.dot(toPoint);
 
                     if (dot > 0.5) { // Roughly 60 degree FoV
-                        player.spawnParticle(Particle.REDSTONE, point, 1, 0, 0, 0, 0, dustOptions);
+                        player.spawnParticle(Particle.DUST, point, 1, 0, 0, 0, 0, dustOptions);
                     }
                 }
             }
