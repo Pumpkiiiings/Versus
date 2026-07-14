@@ -63,7 +63,7 @@ public class DragonVictoryEffect extends VictoryEffect {
                 
                 // Final explosion
                 if (currentTick == maxTicks - 1) {
-                    displayLoc.getWorld().spawnParticle(Particle.EXPLOSION, displayLoc, 2);
+                    displayLoc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, displayLoc, 2);
                     displayLoc.getWorld().playSound(displayLoc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                 }
             }
