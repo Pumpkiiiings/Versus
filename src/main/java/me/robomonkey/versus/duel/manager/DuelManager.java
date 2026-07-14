@@ -257,7 +257,19 @@ public class DuelManager {
             if (!currentDuel.getArena().isInsideBounds(event.getTo())) {
                 org.bukkit.util.Vector dir = currentDuel.getArena().getCenterLocation().toVector()
                         .subtract(event.getTo().toVector()).normalize().multiply(1.2);
-                dir.setY(0.4);
+                
+                // If they are above the arena, push them DOWN. If below, push them UP.
+                double maxY = Math.max(currentDuel.getArena().getPosOne().getY(), currentDuel.getArena().getPosTwo().getY());
+                double minY = Math.min(currentDuel.getArena().getPosOne().getY(), currentDuel.getArena().getPosTwo().getY());
+                
+                if (event.getTo().getY() > maxY) {
+                    dir.setY(-0.6); // Push down strongly
+                } else if (event.getTo().getY() < minY) {
+                    dir.setY(0.8); // Push up strongly to recover from fall
+                } else {
+                    dir.setY(0.4); // Standard horizontal push
+                }
+                
                 player.setVelocity(dir);
 
                 player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ERROR_OUT_OF_BOUNDS));

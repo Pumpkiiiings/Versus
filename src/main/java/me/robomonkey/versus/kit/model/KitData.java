@@ -150,11 +150,29 @@ public class KitData {
             }
             
             if (meta instanceof PotionMeta && section.contains("potion_type")) {
-                String potionTypeStr = section.getString("potion_type");
+                String potionTypeStr = section.getString("potion_type").toUpperCase();
                 try {
-                    PotionType type = PotionType.valueOf(potionTypeStr.toUpperCase());
-                    ((PotionMeta) meta).setBasePotionData(new PotionData(type));
-                } catch (Exception ignored) {}
+                    PotionType type;
+                    boolean extended = false;
+                    boolean upgraded = false;
+                    
+                    if (potionTypeStr.contains("LONG_")) {
+                        extended = true;
+                        potionTypeStr = potionTypeStr.replace("LONG_", "");
+                    }
+                    if (potionTypeStr.contains("STRONG_")) {
+                        upgraded = true;
+                        potionTypeStr = potionTypeStr.replace("STRONG_", "");
+                    }
+                    
+                    if (potionTypeStr.equals("HEALING")) potionTypeStr = "INSTANT_HEAL";
+                    if (potionTypeStr.equals("SWIFTNESS")) potionTypeStr = "SPEED";
+                    
+                    type = PotionType.valueOf(potionTypeStr);
+                    ((PotionMeta) meta).setBasePotionData(new PotionData(type, extended, upgraded));
+                } catch (Exception ignored) {
+                    Versus.error("Invalid potion type: " + potionTypeStr);
+                }
             }
             
             item.setItemMeta(meta);
@@ -189,7 +207,14 @@ public class KitData {
             if (meta instanceof PotionMeta) {
                 PotionData potionData = ((PotionMeta) meta).getBasePotionData();
                 if (potionData != null && potionData.getType() != null) {
-                    section.set("potion_type", potionData.getType().name());
+                    String typeStr = potionData.getType().name();
+                    if (typeStr.equals("INSTANT_HEAL")) typeStr = "HEALING";
+                    if (typeStr.equals("SPEED")) typeStr = "SWIFTNESS";
+                    
+                    if (potionData.isUpgraded()) typeStr = "STRONG_" + typeStr;
+                    if (potionData.isExtended()) typeStr = "LONG_" + typeStr;
+                    
+                    section.set("potion_type", typeStr);
                 }
             }
         }

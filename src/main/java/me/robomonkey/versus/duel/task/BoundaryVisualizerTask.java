@@ -73,12 +73,20 @@ public class BoundaryVisualizerTask implements Runnable {
         if (Math.abs(eye.getZ() - maxZ) < dist) {
             spawnWallParticles(player, eye, dir, minX, maxX, minY, maxY, maxZ, maxZ, dustOptions);
         }
+        // Min Y Floor
+        if (Math.abs(eye.getY() - minY) < dist) {
+            spawnWallParticles(player, eye, dir, minX, maxX, minY, minY, minZ, maxZ, dustOptions);
+        }
+        // Max Y Ceiling
+        if (Math.abs(eye.getY() - maxY) < dist) {
+            spawnWallParticles(player, eye, dir, minX, maxX, maxY, maxY, minZ, maxZ, dustOptions);
+        }
     }
 
     private void spawnWallParticles(Player player, Location eye, Vector eyeDir, double startX, double endX, double startY, double endY, double startZ, double endZ, Particle.DustOptions dustOptions) {
         double step = 0.5; // Particle density
         for (double x = startX; x <= endX; x += (startX == endX ? 1 : step)) {
-            for (double y = Math.max(startY, eye.getY() - 4); y <= Math.min(endY, eye.getY() + 4); y += step) {
+            for (double y = Math.max(startY, eye.getY() - 4); y <= Math.min(endY, eye.getY() + 4); y += (startY == endY ? 1 : step)) {
                 for (double z = startZ; z <= endZ; z += (startZ == endZ ? 1 : step)) {
                     Location point = new Location(eye.getWorld(), x, y, z);
                     double distSq = point.distanceSquared(eye);
