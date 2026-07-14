@@ -1,5 +1,7 @@
 package me.robomonkey.versus.arena.command;
 
+import me.robomonkey.versus.config.command.SetCommand;
+
 import me.robomonkey.versus.command.RootCommand;
 import me.robomonkey.versus.kit.command.KitDeleteCommand;
 import me.robomonkey.versus.kit.command.LoadKitCommand;

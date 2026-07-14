@@ -1,7 +1,11 @@
 package me.robomonkey.versus.arena.command;
 
-import me.robomonkey.versus.arena.Arena;
-import me.robomonkey.versus.arena.ArenaManager;
+import me.robomonkey.versus.config.model.Settings;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.kit.model.Kit;
+
+import me.robomonkey.versus.arena.model.Arena;
+import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.command.AbstractCommand;
 import me.robomonkey.versus.util.MessageUtil;
 import org.bukkit.Location;
@@ -22,7 +26,7 @@ public class ListCommand extends AbstractCommand {
     @Override
     public void callCommand(CommandSender sender, String[] args) {
         if (ArenaManager.getInstance().getAllArenas().size() == 0) {
-            sender.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ARENA_NO_ARENAS_LIST));
+            sender.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ARENA_NO_ARENAS_LIST));
             return;
         }
         sender.sendMessage(MessageUtil.LINE);
@@ -36,7 +40,7 @@ public class ListCommand extends AbstractCommand {
     public String getArenaDescription(Arena arena) {
         Location arenaLocation = arena.getCenterLocation();
         int arenaX = (int) arenaLocation.getX(), arenaY = (int) arenaLocation.getY(), arenaZ = (int) arenaLocation.getZ();
-        String kitNames = arena.getKits().isEmpty() ? "None" : arena.getKits().stream().map(me.robomonkey.versus.kit.Kit::getName).collect(java.util.stream.Collectors.joining(", "));
+        String kitNames = arena.getKits().isEmpty() ? "None" : arena.getKits().stream().map(me.robomonkey.versus.kit.model.Kit::getName).collect(java.util.stream.Collectors.joining(", "));
         return MessageUtil.color(
                 "&h" + arena.getName() + ": " + "&sX&p " + arenaX + " &sY&p " + arenaY + " &sZ&p " + arenaZ + " &sKits: &p" + kitNames + "\n"
         );

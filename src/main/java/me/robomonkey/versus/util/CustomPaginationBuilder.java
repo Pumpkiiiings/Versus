@@ -5,9 +5,9 @@ import com.samjakob.spigui.item.ItemBuilder;
 import com.samjakob.spigui.menu.SGMenu;
 import com.samjakob.spigui.toolbar.SGToolbarBuilder;
 import com.samjakob.spigui.toolbar.SGToolbarButtonType;
-import me.robomonkey.versus.settings.Placeholder;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.config.model.Placeholder;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 

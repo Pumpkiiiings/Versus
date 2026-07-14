@@ -1,9 +1,11 @@
 package me.robomonkey.versus.duel.command;
 
+import me.robomonkey.versus.config.model.Placeholder;
+
 import me.robomonkey.versus.command.AbstractCommand;
-import me.robomonkey.versus.duel.request.RequestManager;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.duel.manager.RequestManager;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +39,7 @@ public class DenyCommand extends AbstractCommand {
         String playername = args[0];
         Player requester = Bukkit.getPlayer(playername);
         if (requester == null) {
-            error(sender, Settings.getMessage(Setting.ERROR_PLAYER_OFFLINE, new me.robomonkey.versus.settings.Placeholder("%player%", playername)));
+            error(sender, Settings.getMessage(Setting.ERROR_PLAYER_OFFLINE, new me.robomonkey.versus.config.model.Placeholder("%player%", playername)));
             return;
         }
         if (requester.equals(player)) {

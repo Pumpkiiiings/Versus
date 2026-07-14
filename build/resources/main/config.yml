@@ -37,7 +37,7 @@ dueling:
     #'spawn' returns winners to their spawnpoint.
     #'previous' returns winners to their previous location.
     #'custom' returns winners to a custom location, configured in the section below.
-    return_winners: 'spectate'
+    return_winners: 'previous'
     #This setting only takes effect if 'return_winners' is set to 'custom'.
     winner_return_location:
       x: 0
@@ -53,7 +53,7 @@ dueling:
     #'spawn' returns losers to their spawnpoint.
     #'previous' returns losers to their previous location.
     #'custom' returns winners to a custom location, configured in the section below.
-    return_losers: 'spawn'
+    return_losers: 'previous'
     #This setting only takes effect if 'return_losers' is set to 'custom'.
     loser_return_location:
       x: 0
@@ -66,12 +66,9 @@ dueling:
     #Sets whether players respawn instantly after losing a duel, skipping the respawn screen.
     instant_respawn: false
 
-    #enable or disable placing blocks while in a duel.
-    allow_block_placements: true
-    #enable or disable destroying blocks while in a duel.
-    allow_block_destruction: true
     #Sets the duration of the countdown before a duel.
     countdown_duration: 5
+    post_duel_delay: 5
     #List of the commands that will be blocked during a duel.
     blocked_commands:
       - 'heal'
@@ -174,3 +171,4 @@ dependencies:
   itemsadder:
     #Sets whether custom ItemsAdder items can be saved to kits.
     items_adder_for_kits: true
+    post_duel_delay: 5

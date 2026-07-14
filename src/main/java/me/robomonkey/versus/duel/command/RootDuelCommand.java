@@ -1,10 +1,16 @@
 package me.robomonkey.versus.duel.command;
 
+import me.robomonkey.versus.cosmetic.command.CosmeticsCommand;
+import me.robomonkey.versus.reward.command.RewardsCommand;
+import me.robomonkey.versus.storage.command.StatsCommand;
+import me.robomonkey.versus.config.model.Placeholder;
+import me.robomonkey.versus.kit.model.Kit;
+
 import me.robomonkey.versus.command.RootCommand;
-import me.robomonkey.versus.duel.DuelManager;
-import me.robomonkey.versus.duel.request.RequestManager;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.duel.manager.DuelManager;
+import me.robomonkey.versus.duel.manager.RequestManager;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,10 +18,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 import me.robomonkey.versus.dependency.EconomyManager;
-import me.robomonkey.versus.arena.ArenaManager;
-import me.robomonkey.versus.arena.ArenaSelectionGUI;
-import me.robomonkey.versus.kit.KitSelectionGUI;
-import me.robomonkey.versus.arena.Arena;
+import me.robomonkey.versus.arena.manager.ArenaManager;
+import me.robomonkey.versus.arena.gui.ArenaSelectionGUI;
+import me.robomonkey.versus.kit.gui.KitSelectionGUI;
+import me.robomonkey.versus.arena.model.Arena;
 
 public class RootDuelCommand extends RootCommand {
 
@@ -45,7 +51,7 @@ public class RootDuelCommand extends RootCommand {
         String playerNameRequested = args[0];
         Player requested = Bukkit.getPlayer(playerNameRequested);
         if (requested == null) {
-            error(sender, Settings.getMessage(Setting.ERROR_PLAYER_OFFLINE, new me.robomonkey.versus.settings.Placeholder("%player%", playerNameRequested)));
+            error(sender, Settings.getMessage(Setting.ERROR_PLAYER_OFFLINE, new me.robomonkey.versus.config.model.Placeholder("%player%", playerNameRequested)));
             return;
         }
         if (requested.equals(player)) {
@@ -57,7 +63,7 @@ public class RootDuelCommand extends RootCommand {
             return;
         }
         if (DuelManager.getInstance().isDueling(requested) || requestManager.isQueued(requested)) {
-            error(sender, Settings.getMessage(Setting.ERROR_TARGET_CANNOT_DUEL, new me.robomonkey.versus.settings.Placeholder("%player%", requested.getName())));
+            error(sender, Settings.getMessage(Setting.ERROR_TARGET_CANNOT_DUEL, new me.robomonkey.versus.config.model.Placeholder("%player%", requested.getName())));
             return;
         }
         if (requestManager.hasIncomingRequest(player)
@@ -87,7 +93,7 @@ public class RootDuelCommand extends RootCommand {
             return;
         }
         if (requestManager.isRequestedBy(player, requested)) {
-            error(sender, Settings.getMessage(Setting.ERROR_WAIT_FOR_RESPONSE, new me.robomonkey.versus.settings.Placeholder("%player%", requested.getName())));
+            error(sender, Settings.getMessage(Setting.ERROR_WAIT_FOR_RESPONSE, new me.robomonkey.versus.config.model.Placeholder("%player%", requested.getName())));
             return;
         }
         
@@ -96,7 +102,7 @@ public class RootDuelCommand extends RootCommand {
             arenaName = args[1];
             Arena arena = ArenaManager.getInstance().getArena(arenaName);
             if (arena == null) {
-                error(sender, Settings.getMessage(Setting.ERROR_ARENA_NOT_EXIST, new me.robomonkey.versus.settings.Placeholder("%arena%", arenaName)));
+                error(sender, Settings.getMessage(Setting.ERROR_ARENA_NOT_EXIST, new me.robomonkey.versus.config.model.Placeholder("%arena%", arenaName)));
                 return;
             }
             
@@ -108,7 +114,7 @@ public class RootDuelCommand extends RootCommand {
         } else {
             // Open Arena Selection GUI
             ArenaSelectionGUI arenaGUI = new ArenaSelectionGUI(player, selectedArena -> {
-                List<me.robomonkey.versus.kit.Kit> allowedKits = selectedArena != null ? selectedArena.getKits() : null;
+                List<me.robomonkey.versus.kit.model.Kit> allowedKits = selectedArena != null ? selectedArena.getKits() : null;
                 String finalArenaName = selectedArena != null ? selectedArena.getName() : null;
                 
                 // Then open Kit Selection GUI

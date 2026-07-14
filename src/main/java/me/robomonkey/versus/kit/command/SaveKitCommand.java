@@ -1,10 +1,10 @@
 package me.robomonkey.versus.kit.command;
 
 import me.robomonkey.versus.command.AbstractCommand;
-import me.robomonkey.versus.kit.KitManager;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
-import me.robomonkey.versus.settings.Placeholder;
+import me.robomonkey.versus.kit.manager.KitManager;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
+import me.robomonkey.versus.config.model.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -1,5 +1,11 @@
 package me.robomonkey.versus;
 
+import me.robomonkey.versus.duel.task.BoundaryVisualizerTask;
+import me.robomonkey.versus.cosmetic.manager.CosmeticsManager;
+import me.robomonkey.versus.reward.manager.RewardManager;
+import me.robomonkey.versus.duel.command.DuelGroupCommand;
+import me.robomonkey.versus.command.RootVersusCommand;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
@@ -9,20 +15,20 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonParseException;
 import com.samjakob.spigui.SpiGUI;
-import me.robomonkey.versus.arena.ArenaManager;
+import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.arena.command.RootArenaCommand;
 import me.robomonkey.versus.dependency.Dependencies;
-import me.robomonkey.versus.duel.DuelManager;
+import me.robomonkey.versus.duel.manager.DuelManager;
 import me.robomonkey.versus.duel.command.RootDuelCommand;
 import me.robomonkey.versus.duel.command.RootSpectateCommand;
-import me.robomonkey.versus.duel.eventlisteners.PacketVisibilityListener;
-import me.robomonkey.versus.duel.playerdata.adapter.ConfigurationSerializableAdapter;
-import me.robomonkey.versus.duel.playerdata.adapter.ItemStackAdapter;
-import me.robomonkey.versus.duel.playerdata.DatabaseManager;
-import me.robomonkey.versus.duel.playerdata.StatsManager;
-import me.robomonkey.versus.duel.playerdata.adapter.ItemStackArrayAdapter;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.listener.visibility.PacketVisibilityListener;
+import me.robomonkey.versus.storage.adapter.ConfigurationSerializableAdapter;
+import me.robomonkey.versus.storage.adapter.ItemStackAdapter;
+import me.robomonkey.versus.storage.manager.DatabaseManager;
+import me.robomonkey.versus.storage.manager.StatsManager;
+import me.robomonkey.versus.storage.adapter.ItemStackArrayAdapter;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import me.robomonkey.versus.util.MenuManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -106,9 +112,9 @@ public final class Versus extends JavaPlugin {
         log("Versus has been enabled!");
         instance = this;
         DatabaseManager.getInstance();
-        me.robomonkey.versus.duel.rewards.RewardManager.getInstance().startCleanupTask();
+        me.robomonkey.versus.reward.manager.RewardManager.getInstance().startCleanupTask();
         StatsManager.getInstance();
-        me.robomonkey.versus.cosmetics.CosmeticsManager.init();
+        me.robomonkey.versus.cosmetic.manager.CosmeticsManager.init();
         MenuManager.init(this);
         Settings.getInstance().registerConfig();
         spiGUI = new SpiGUI(this);
@@ -116,7 +122,7 @@ public final class Versus extends JavaPlugin {
         duelManager = DuelManager.getInstance();
         arenaManager = ArenaManager.getInstance();
         Bukkit.getScheduler().runTask(this, () -> arenaManager.loadArenas());
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new me.robomonkey.versus.duel.BoundaryVisualizerTask(duelManager), 2L, 2L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new me.robomonkey.versus.duel.task.BoundaryVisualizerTask(duelManager), 2L, 2L);
         registerCommands();
         Dependencies.refresh(getServer());
         me.robomonkey.versus.dependency.EconomyManager.setup();
@@ -141,7 +147,7 @@ public final class Versus extends JavaPlugin {
         new RootVersusCommand();
         new RootDuelCommand();
         new RootSpectateCommand();
-        new me.robomonkey.versus.command.DuelGroupCommand();
+        new me.robomonkey.versus.duel.command.DuelGroupCommand();
     }
 
     private void registerMetrics() {

@@ -1,10 +1,12 @@
 package me.robomonkey.versus.arena.command;
 
-import me.robomonkey.versus.arena.ArenaBuilderCoordinator;
-import me.robomonkey.versus.arena.ArenaManager;
+import me.robomonkey.versus.config.model.Placeholder;
+
+import me.robomonkey.versus.arena.editor.ArenaBuilderCoordinator;
+import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.command.AbstractCommand;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,7 +29,7 @@ public class CreateCommand extends AbstractCommand {
         String arenaName = args[0];
         Player player = (Player) sender;
         if (ArenaManager.getInstance().getArena(arenaName) != null) {
-            error(sender, Settings.getMessage(Setting.ERROR_ARENA_ALREADY_EXISTS, new me.robomonkey.versus.settings.Placeholder("%arena%", arenaName)));
+            error(sender, Settings.getMessage(Setting.ERROR_ARENA_ALREADY_EXISTS, new me.robomonkey.versus.config.model.Placeholder("%arena%", arenaName)));
             return;
         }
         ArenaBuilderCoordinator.getInstance().initiateArenaBuilder(player, arenaName);

@@ -28,6 +28,31 @@ public class EffectUtil {
         player.playSound(player.getLocation(), sound, Float.POSITIVE_INFINITY, 1F);
     }
 
+    public static void stopDuelMusic(Player player) {
+        try {
+            if (me.robomonkey.versus.config.model.Settings.is(me.robomonkey.versus.config.model.Setting.FIGHT_MUSIC_ENABLED)) {
+                String soundName = me.robomonkey.versus.config.model.Setting.FIGHT_MUSIC.getValue().toString().toUpperCase();
+                Sound sound = null;
+                try { sound = Sound.valueOf("MUSIC_DISC_" + soundName); } catch (Exception e) {}
+                if (sound == null) {
+                    try { sound = Sound.valueOf("RECORD_" + soundName); } catch (Exception e) {}
+                }
+                if (sound != null) player.stopSound(sound);
+            }
+        } catch (Exception e) {}
+        try {
+            if (me.robomonkey.versus.config.model.Settings.is(me.robomonkey.versus.config.model.Setting.VICTORY_MUSIC_ENABLED)) {
+                String soundName = me.robomonkey.versus.config.model.Setting.VICTORY_MUSIC.getValue().toString().toUpperCase();
+                Sound sound = null;
+                try { sound = Sound.valueOf("MUSIC_DISC_" + soundName); } catch (Exception e) {}
+                if (sound == null) {
+                    try { sound = Sound.valueOf("RECORD_" + soundName); } catch (Exception e) {}
+                }
+                if (sound != null) player.stopSound(sound);
+            }
+        } catch (Exception e) {}
+    }
+
     public static void spawnFireWorks(Location loc, int amount, Integer power, Color color) {
         Firework firework = (Firework) loc.getWorld().spawnEntity(loc, FIREWORK_TYPE);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();

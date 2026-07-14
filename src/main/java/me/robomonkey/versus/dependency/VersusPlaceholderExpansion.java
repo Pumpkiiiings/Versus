@@ -1,7 +1,9 @@
 package me.robomonkey.versus.dependency;
 
+import me.robomonkey.versus.config.model.Placeholder;
+
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.robomonkey.versus.duel.DuelManager;
+import me.robomonkey.versus.duel.manager.DuelManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

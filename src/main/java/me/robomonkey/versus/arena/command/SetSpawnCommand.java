@@ -1,8 +1,8 @@
 package me.robomonkey.versus.arena.command;
 
 import me.robomonkey.versus.command.AbstractCommand;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import me.robomonkey.versus.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class SetSpawnCommand extends AbstractCommand {
         settings.changeSetting(Setting.RETURN_LOSERS, "custom");
         
         settings.saveSettingsChanges(changed -> {
-            sender.sendMessage(me.robomonkey.versus.settings.Settings.getMessage(me.robomonkey.versus.settings.Setting.ARENA_SPAWN_SET));
+            sender.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ARENA_SPAWN_SET));
         });
     }
 

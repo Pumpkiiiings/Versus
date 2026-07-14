@@ -1,11 +1,11 @@
 package me.robomonkey.versus.arena.command;
 
-import me.robomonkey.versus.arena.Arena;
-import me.robomonkey.versus.arena.ArenaManager;
+import me.robomonkey.versus.arena.model.Arena;
+import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.command.AbstractCommand;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
-import me.robomonkey.versus.settings.Placeholder;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
+import me.robomonkey.versus.config.model.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

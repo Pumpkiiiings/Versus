@@ -1,7 +1,7 @@
 package me.robomonkey.versus.dependency;
 
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import org.bukkit.Server;
 
 public class Dependencies {

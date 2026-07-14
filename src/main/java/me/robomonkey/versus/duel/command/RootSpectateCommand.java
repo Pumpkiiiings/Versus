@@ -1,11 +1,11 @@
 package me.robomonkey.versus.duel.command;
 
 import me.robomonkey.versus.command.RootCommand;
-import me.robomonkey.versus.duel.Duel;
-import me.robomonkey.versus.duel.DuelManager;
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
-import me.robomonkey.versus.settings.Placeholder;
+import me.robomonkey.versus.duel.model.Duel;
+import me.robomonkey.versus.duel.manager.DuelManager;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
+import me.robomonkey.versus.config.model.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

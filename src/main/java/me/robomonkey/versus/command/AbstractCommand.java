@@ -1,7 +1,7 @@
 package me.robomonkey.versus.command;
 
-import me.robomonkey.versus.settings.Setting;
-import me.robomonkey.versus.settings.Settings;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import me.robomonkey.versus.util.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,13 +13,13 @@ public abstract class AbstractCommand {
     public static String errorPrefix = Settings.getMessage(Setting.ERROR_PREFIX);
     public static String permissionErrorMessage = errorPrefix + Settings.getMessage(Setting.NO_PERMISSION_MESSAGE);
     public static String improperSenderErrorMessage = errorPrefix + Settings.getMessage(Setting.ONLY_PLAYERS_MESSAGE);
-    String command;
-    String permission;
+    protected String command;
+    protected String permission;
     private String usage = "";
     private String description = "";
     private Set<AbstractCommand> branches = new HashSet<>();
-    boolean playersOnly = false;
-    boolean staticTabComplete = false;
+    protected boolean playersOnly = false;
+    protected boolean staticTabComplete = false;
     private List<String> additionalCompletions = new ArrayList<>();
     private boolean permissionRequired = true;
     private boolean argumentRequired = true;
@@ -283,7 +283,7 @@ public abstract class AbstractCommand {
         AbstractCommand branchFromName = getBranchFromName(firstArg);
         if (branchFromName == null) {
             if (autonomous) callCommand(sender, args);
-            else error(sender, Settings.getMessage(Setting.ERROR_UNKNOWN_COMMAND, me.robomonkey.versus.settings.Placeholder.of("%arg%", firstArg), me.robomonkey.versus.settings.Placeholder.of("%command%", command)));
+            else error(sender, Settings.getMessage(Setting.ERROR_UNKNOWN_COMMAND, me.robomonkey.versus.config.model.Placeholder.of("%arg%", firstArg), me.robomonkey.versus.config.model.Placeholder.of("%command%", command)));
         } else {
             branchFromName.dispatchCommand(sender, Arrays.copyOfRange(args, 1, args.length));
         }
