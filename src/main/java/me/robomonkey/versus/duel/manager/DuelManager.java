@@ -64,6 +64,7 @@ public class DuelManager {
     private Versus plugin = Versus.getInstance();
     private HashMap<UUID, Location> spectatorLocations = new HashMap<>();
     private HashMap<UUID, org.bukkit.GameMode> spectatorGameModes = new HashMap<>();
+    private HashMap<UUID, Long> outOfBoundsCooldown = new HashMap<>();
 
     private DuelManager() {
         instance = this;
@@ -272,8 +273,12 @@ public class DuelManager {
                 
                 player.setVelocity(dir);
 
-                player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ERROR_OUT_OF_BOUNDS));
-                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+                long lastWarning = outOfBoundsCooldown.getOrDefault(player.getUniqueId(), 0L);
+                if (System.currentTimeMillis() - lastWarning > 3000) { // 3 seconds cooldown
+                    player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ERROR_OUT_OF_BOUNDS));
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+                    outOfBoundsCooldown.put(player.getUniqueId(), System.currentTimeMillis());
+                }
             }
         }
     }
