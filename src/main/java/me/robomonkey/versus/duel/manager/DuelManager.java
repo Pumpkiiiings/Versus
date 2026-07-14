@@ -287,8 +287,8 @@ public class DuelManager {
             undoCountdown(currentDuel);
         }
         if (fakeDeath) {
-            restoreData(loser, false);
             resetAttributes(loser);
+            loser.getInventory().clear();
         }
         
         if (currentDuel.isActive()) {
@@ -458,7 +458,6 @@ public class DuelManager {
                 }
                 
                 renderLossEffects(loser, winners);
-                extricateLoser(loser, duel);
             }
         }
         
@@ -470,18 +469,24 @@ public class DuelManager {
         } catch (Exception ignored) {}
         
         if (delaySeconds > 0) {
-            // Keep winners in arena for effects, but extricate losers immediately (done above)
-            Bukkit.getScheduler().runTaskLater(plugin, () -> finishDuelCleanup(duel, winners), delaySeconds * 20L);
+            // Keep everyone in arena for effects, extricate in finishDuelCleanup
+            Bukkit.getScheduler().runTaskLater(plugin, () -> finishDuelCleanup(duel, winners, losers), delaySeconds * 20L);
         } else {
-            finishDuelCleanup(duel, winners);
+            finishDuelCleanup(duel, winners, losers);
         }
     }
     
-    private void finishDuelCleanup(Duel duel, List<UUID> winners) {
+    private void finishDuelCleanup(Duel duel, List<UUID> winners, List<UUID> losers) {
         for (UUID w : winners) {
             Player winner = Bukkit.getPlayer(w);
             if (winner != null) {
                 extricateWinner(winner, duel);
+            }
+        }
+        for (UUID l : losers) {
+            Player loser = Bukkit.getPlayer(l);
+            if (loser != null) {
+                extricateLoser(loser, duel);
             }
         }
         // Return spectators & rollback arena
