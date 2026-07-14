@@ -5,6 +5,8 @@ import me.robomonkey.versus.cosmetic.manager.CosmeticsManager;
 import me.robomonkey.versus.reward.manager.RewardManager;
 import me.robomonkey.versus.duel.command.DuelGroupCommand;
 import me.robomonkey.versus.command.RootVersusCommand;
+import me.robomonkey.versus.command.RootVersusTestCommand;
+import me.robomonkey.versus.command.RootVersusStatsCommand;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -148,6 +150,8 @@ public final class Versus extends JavaPlugin {
         new RootDuelCommand();
         new RootSpectateCommand();
         new me.robomonkey.versus.duel.command.DuelGroupCommand();
+        new RootVersusTestCommand();
+        new RootVersusStatsCommand();
     }
 
     private void registerMetrics() {

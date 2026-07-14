@@ -52,9 +52,11 @@ public class PlayerStats {
     
     public int getWins() { return wins; }
     public void addWin() { this.wins++; }
+    public void setWins(int wins) { this.wins = wins; }
     
     public int getLosses() { return losses; }
     public void addLoss() { this.losses++; }
+    public void setLosses(int losses) { this.losses = losses; }
     
     public int getCurrentStreak() { return currentStreak; }
     public void addStreak() { 

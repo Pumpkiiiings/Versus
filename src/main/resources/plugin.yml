@@ -18,3 +18,7 @@ commands:
     description: Configure Versus.
   duelgroup:
     description: Manage party and group duels.
+  versustest:
+    description: Test cosmetics and other features.
+  versustats:
+    description: Manage player stats.
