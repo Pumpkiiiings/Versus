@@ -57,7 +57,7 @@ public class DragonVictoryEffect extends VictoryEffect {
                         double x = Math.cos(pAngle) * 1.5;
                         double z = Math.sin(pAngle) * 1.5;
                         Location particleLoc = displayLoc.clone().add(x, -0.5, z);
-                        particleLoc.getWorld().spawnParticle(Particle.DRAGON_BREATH, particleLoc, 1, 0, 0, 0, 0.05);
+                        particleLoc.getWorld().spawnParticle(Particle.DRAGON_BREATH, particleLoc, 1, 0.0, 0.0, 0.0, 0.0, 0.05f);
                     }
                 }
                 
