@@ -84,31 +84,6 @@ public class EntityTagListener implements Listener {
                 Duel pDuel = DuelManager.getInstance().getDuel(p);
                 return pDuel == null || !pDuel.equals(shooterDuel);
             });
-
-            // Cancel the event so vanilla doesn't broadcast sound/particles to everyone
-            event.setCancelled(true);
-            
-            // Manually apply potion effects to the filtered players
-            event.getAffectedEntities().forEach(entity -> {
-                event.getPotion().getEffects().forEach(effect -> {
-                    double intensity = event.getIntensity(entity);
-                    int duration = (int) (effect.getDuration() * intensity);
-                    if (duration > 0) {
-                        entity.addPotionEffect(new org.bukkit.potion.PotionEffect(
-                                effect.getType(), duration, effect.getAmplifier(),
-                                effect.isAmbient(), effect.hasParticles(), effect.hasIcon()));
-                    }
-                });
-            });
-
-            // Manually play the break effect only to the players in the duel and spectators
-            org.bukkit.Location loc = projectile.getLocation();
-            for (Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
-                if (ArenaVisibilityManager.canSee(shooter, p)) {
-                    // Play effect (2002 is potion break)
-                    p.playEffect(loc, Effect.POTION_BREAK, event.getPotion().getItem().getDurability());
-                }
-            }
         }
     }
 }

@@ -182,7 +182,12 @@ public class DuelManager {
     }
     
     private void executeDuelSetup(Duel newDuel, List<Player> team1, List<Player> team2) {
-        newDuel.getPlayers().stream().forEach((player) -> dataManager.save(player, newDuel.getArena()));
+        newDuel.getPlayers().stream().forEach((player) -> {
+            if (isSpectating(player)) {
+                removeSpectator(player);
+            }
+            dataManager.save(player, newDuel.getArena());
+        });
         
         team1.forEach(p -> p.teleport(newDuel.getArena().getSpawnLocationOne()));
         team2.forEach(p -> p.teleport(newDuel.getArena().getSpawnLocationTwo()));
@@ -597,7 +602,8 @@ public class DuelManager {
                         new BlockBreakListener(),
                         new BlockPlaceListener(),
                         new DamageEventListener(),
-                        new EntityTagListener())
+                        new EntityTagListener(),
+                        new me.robomonkey.versus.listener.combat.EnderPearlListener())
                 .forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, Versus.getInstance()));
     }
 

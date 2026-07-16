@@ -161,6 +161,7 @@ public enum Setting {
     BLOCKED_COMMANDS("dueling.mechanics", Type.INVALID),
     COUNTDOWN_DURATION("dueling.mechanics", Type.NUMBER),
     POST_DUEL_DELAY("dueling.mechanics", Type.NUMBER),
+    ENDER_PEARL_COOLDOWN("dueling.mechanics", Type.NUMBER),
 
     ANNOUNCE_DUELS("dueling.announcements", Type.BOOLEAN),
     DUEL_START_ANNOUNCEMENT("dueling.announcements", Type.STRING, FileType.MESSAGES),

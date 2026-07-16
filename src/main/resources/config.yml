@@ -69,6 +69,7 @@ dueling:
     #Sets the duration of the countdown before a duel.
     countdown_duration: 5
     post_duel_delay: 5
+    ender_pearl_cooldown: 10
     #List of the commands that will be blocked during a duel.
     blocked_commands:
       - 'heal'
