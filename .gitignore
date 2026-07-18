@@ -111,3 +111,16 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# Text files, Javascript, and Scripts
+*.txt
+*.js
+*.bat
+*.sh
+*.ps1
+*.py
+
+# IDE and Build Tools
+.vscode/
+.gradle/
+build/
