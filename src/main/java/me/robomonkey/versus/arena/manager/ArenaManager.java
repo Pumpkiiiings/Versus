@@ -86,26 +86,31 @@ public class ArenaManager {
         if (oldDataFile.exists()) {
             Versus.log("Found old arena.json, starting migration to YAML...");
             try (Reader reader = new FileReader(oldDataFile)) {
-                JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
-                for (JsonElement element : jsonArray) {
-                    JsonObject obj = element.getAsJsonObject();
-                    String name = obj.get("name").getAsString();
-                    Arena arena = new Arena(name);
-                    
-                    arena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, parseLocation(obj.getAsJsonObject("spawnLocationOne")));
-                    arena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, parseLocation(obj.getAsJsonObject("spawnLocationTwo")));
-                    arena.setLocationProperty(ArenaProperty.CENTER_LOCATION, parseLocation(obj.getAsJsonObject("centerLocation")));
-                    arena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, parseLocation(obj.getAsJsonObject("spectateLocation")));
-                    
-                    if (obj.has("enabled")) arena.setEnabled(obj.get("enabled").getAsBoolean());
-                    if (obj.has("kit")) {
-                        Kit legacyKit = KitManager.getInstance().getKit(obj.get("kit").getAsString());
-                        if (legacyKit != null) arena.addKit(legacyKit);
+                JsonElement parsed = JsonParser.parseReader(reader);
+                if (parsed != null && parsed.isJsonArray()) {
+                    JsonArray jsonArray = parsed.getAsJsonArray();
+                    for (JsonElement element : jsonArray) {
+                        JsonObject obj = element.getAsJsonObject();
+                        String name = obj.get("name").getAsString();
+                        Arena arena = new Arena(name);
+                        
+                        arena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_ONE, parseLocation(obj.getAsJsonObject("spawnLocationOne")));
+                        arena.setLocationProperty(ArenaProperty.SPAWN_LOCATION_TWO, parseLocation(obj.getAsJsonObject("spawnLocationTwo")));
+                        arena.setLocationProperty(ArenaProperty.CENTER_LOCATION, parseLocation(obj.getAsJsonObject("centerLocation")));
+                        arena.setLocationProperty(ArenaProperty.SPECTATE_LOCATION, parseLocation(obj.getAsJsonObject("spectateLocation")));
+                        
+                        if (obj.has("enabled")) arena.setEnabled(obj.get("enabled").getAsBoolean());
+                        if (obj.has("kit")) {
+                            Kit legacyKit = KitManager.getInstance().getKit(obj.get("kit").getAsString());
+                            if (legacyKit != null) arena.addKit(legacyKit);
+                        }
+                        
+                        arenaList.add(arena);
                     }
-                    
-                    arenaList.add(arena);
+                    saveAllArenas(); // Save to YAML format
+                } else {
+                    Versus.log("arena.json is empty or invalid, skipping migration.");
                 }
-                saveAllArenas(); // Save to YAML format
                 boolean deleted = oldDataFile.delete();
                 if (!deleted) {
                     oldDataFile.renameTo(new File(plugin.getDataFolder(), "arena.json.old"));
