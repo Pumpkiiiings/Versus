@@ -419,3 +419,22 @@ menus:
     pagination_current_lore: "&7Estás viendo actualmente\n&7la página %page%."
     pagination_next_page: "&a&lSiguiente Página →"
     pagination_next_lore: "&aClick para ir a la\n&apágina %page%."
+
+ranked:
+  messages:
+    ranked_queue_join: "&aTe uniste a la cola Ranked para %kit% (ELO: %elo%)"
+    ranked_queue_leave: "&cSaliste de la cola Ranked."
+    ranked_queue_match_found: "&a¡Oponente encontrado! Preparando duelo..."
+    ranked_elo_change_winner: "&a¡Victoria! ELO: %old_elo% -> %new_elo% (+%diff%)"
+    ranked_elo_change_loser: "&cDerrota. ELO: %old_elo% -> %new_elo% (-%diff%)"
+    ranked_season_ended_broadcast: "&e&lVERSUS &8» &a¡La Temporada Competitiva ha finalizado! Se han entregado las recompensas y reiniciado los rangos."
+  menus:
+    ranked:
+      ranked_menu_title: "&6⚔ &lRanked Matchmaking &6⚔"
+      ranked_menu_lore_join: "&aHaz clic para unirte a la cola."
+      ranked_menu_lore_leave: "&cYa estás en la cola. Usa /arena leavequeue"
+      ranked_menu_lore_elo: "&7Tu ELO: &b%elo%"
+    top:
+      top_menu_title: "&6🏆 &lTop 10 ELO &6🏆"
+      top_menu_lore_elo: "&7ELO: &b%elo%"
+      top_menu_no_players: "&7No hay jugadores todavía."

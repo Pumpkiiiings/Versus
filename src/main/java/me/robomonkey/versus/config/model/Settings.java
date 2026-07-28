@@ -93,6 +93,10 @@ public class Settings {
 
     public static String getMessage(Setting setting) {
         String message = (String) setting.getValue();
+        if (message == null) {
+            Versus.error("Missing message config key: '" + setting.getPath() + "'. Returning empty string.");
+            return "";
+        }
         return MessageUtil.color(message);
     }
 
@@ -179,6 +183,10 @@ public class Settings {
 
     public static String getMessage(Setting setting, Placeholder... placeholders) {
         String message = (String) setting.getValue();
+        if (message == null) {
+            Versus.error("Missing message config key: '" + setting.getPath() + "'. Returning empty string.");
+            return "";
+        }
         for (Placeholder placeholder : placeholders) {
             message = message.replace(placeholder.holder, placeholder.replacement);
         }
