@@ -1,0 +1,28 @@
+# ═══════════════════════════════════════════════
+#       MENÚ TOP ELO — Versus Plugin
+# ═══════════════════════════════════════════════
+# Este menú se abre con /ranked top <kit>.
+# Muestra el Top 10 de jugadores por ELO en ese kit.
+#
+# Placeholders disponibles:
+#   {kit}    → nombre del kit
+#   {rank}   → posición en el ranking (1-10)
+#   {player} → nombre del jugador
+#   {elo}    → ELO del jugador
+
+title: "&6🏆 &lTop 10 ELO — {kit} &6🏆"
+rows: 3
+
+# ── Ícono de jugador (PLAYER_HEAD) ──────────────
+player-icon:
+  # Formato del nombre que aparece sobre la calavera.
+  name: "&e#{rank} &b{player}"
+  lore:
+    - "&7ELO: &b{elo}"
+
+# ── Slot vacío (si hay menos de 10 jugadores) ───
+empty-button:
+  material: GRAY_STAINED_GLASS_PANE
+  name: " "
+  flags:
+    - HIDE_ATTRIBUTES

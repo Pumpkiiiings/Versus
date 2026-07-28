@@ -1,0 +1,28 @@
+# ═══════════════════════════════════════════════
+#       MENÚ RANKED QUEUE — Versus Plugin
+# ═══════════════════════════════════════════════
+# Este menú se abre con /ranked queue.
+# Muestra un ícono por cada kit habilitado para ranked.
+#
+# Placeholders disponibles en lore/name de kit-icon:
+#   {kit}  → nombre del kit
+#   {elo}  → ELO actual del jugador para ese kit
+
+title: "&6⚔ &lRanked Matchmaking &6⚔"
+rows: 3
+
+# ── Ícono de cada kit ───────────────────────────
+# El material se toma del ítem de display del kit.
+kit-icon:
+  name: "&p{kit} Ranked"
+  lore:
+    - "&aHaz clic para unirte a la cola."
+    - ""
+    - "&7Tu ELO: &b{elo}"
+
+# ── Relleno de fondo (slots vacíos) ─────────────
+empty-button:
+  material: GRAY_STAINED_GLASS_PANE
+  name: " "
+  flags:
+    - HIDE_ATTRIBUTES

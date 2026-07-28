@@ -44,6 +44,8 @@ public class MenuManager {
         loadMenu("cosmetics_main.yml");
         loadMenu("cosmetics_kill.yml");
         loadMenu("cosmetics_victory.yml");
+        loadMenu("ranked_queue.yml");
+        loadMenu("ranked_top.yml");
     }
 
     public void loadMenu(String fileName) {

@@ -173,3 +173,15 @@ dependencies:
     #Sets whether custom ItemsAdder items can be saved to kits.
     items_adder_for_kits: true
     post_duel_delay: 5
+
+ranked:
+  ranked_base_elo: 1000
+  ranked_k_factor: 32
+  queue:
+    ranked_queue_base_elo_diff: 50
+    ranked_queue_elo_diff_per_second: 10
+  season:
+    rewards:
+      ranked_season_rewards_top_1_xp: 5000
+      ranked_season_rewards_top_2_xp: 2500
+      ranked_season_rewards_top_3_xp: 1000
