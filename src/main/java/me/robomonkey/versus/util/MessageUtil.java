@@ -39,9 +39,9 @@ public class MessageUtil {
         String afterText = splitMessage[1];
 
         TextComponent selectButton = createButton(color(buttonText), commandText, hoverText);
-        TextComponent mainMessage = new TextComponent(MessageUtil.color(beforeText));
+        TextComponent mainMessage = new TextComponent(TextComponent.fromLegacyText(MessageUtil.color(beforeText)));
         mainMessage.addExtra(selectButton);
-        mainMessage.addExtra(MessageUtil.color(afterText));
+        mainMessage.addExtra(new TextComponent(TextComponent.fromLegacyText(MessageUtil.color(afterText))));
         return mainMessage;
     }
 
@@ -60,7 +60,7 @@ public class MessageUtil {
                 TextComponent button = createButton(color(buttonText), commandText, hoverText);
                 messageWithButton.addExtra(button);
             } else {
-                messageWithButton.addExtra(color(messageSegments[index]));
+                messageWithButton.addExtra(new TextComponent(TextComponent.fromLegacyText(color(messageSegments[index]))));
             }
         }
         return messageWithButton;
@@ -79,9 +79,9 @@ public class MessageUtil {
         String afterText = splitMessage[1];
 
         TextComponent selectButton = createButton(color(buttonText), commandText);
-        TextComponent mainMessage = new TextComponent(MessageUtil.color(beforeText));
+        TextComponent mainMessage = new TextComponent(TextComponent.fromLegacyText(MessageUtil.color(beforeText)));
         mainMessage.addExtra(selectButton);
-        mainMessage.addExtra(MessageUtil.color(afterText));
+        mainMessage.addExtra(new TextComponent(TextComponent.fromLegacyText(MessageUtil.color(afterText))));
         return mainMessage;
     }
 
@@ -89,7 +89,7 @@ public class MessageUtil {
      * Returns a button component with the given text on both click and hover events.
      */
     public static TextComponent createButton(String buttonText, String commandOnClick, String hoverText) {
-        TextComponent newButton = new TextComponent(color(buttonText));
+        TextComponent newButton = new TextComponent(TextComponent.fromLegacyText(color(buttonText)));
         newButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandOnClick));
         newButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
         return newButton;
@@ -99,7 +99,7 @@ public class MessageUtil {
      * Returns a button component with the given command ran on click event.
      */
     public static TextComponent createButton(String buttonText, String commandOnClick) {
-        TextComponent newButton = new TextComponent(color(buttonText));
+        TextComponent newButton = new TextComponent(TextComponent.fromLegacyText(color(buttonText)));
         newButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandOnClick));
         return newButton;
     }
@@ -108,7 +108,7 @@ public class MessageUtil {
      * Returns a componnet with the given hoverText on hover.
      */
     public static TextComponent getHoverText(String text, String hoverText) {
-        TextComponent newButton = new TextComponent(color(text));
+        TextComponent newButton = new TextComponent(TextComponent.fromLegacyText(color(text)));
         newButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
         return newButton;
     }

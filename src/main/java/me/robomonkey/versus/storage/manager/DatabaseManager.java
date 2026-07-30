@@ -55,11 +55,13 @@ public class DatabaseManager {
                     "best_streak INT DEFAULT 0, " +
                     "kill_effect VARCHAR(32) DEFAULT 'NONE', " +
                     "victory_effect VARCHAR(32) DEFAULT 'NONE', " +
-                    "unlocked_cosmetics VARCHAR(1000) DEFAULT ''" +
+                    "unlocked_cosmetics VARCHAR(1000) DEFAULT ''," +
+                    "elo_data VARCHAR(2000) DEFAULT ''" +
                     ")");
             try { statement.execute("ALTER TABLE player_stats ADD COLUMN kill_effect VARCHAR(32) DEFAULT 'NONE'"); } catch (SQLException ignored) {}
             try { statement.execute("ALTER TABLE player_stats ADD COLUMN victory_effect VARCHAR(32) DEFAULT 'NONE'"); } catch (SQLException ignored) {}
             try { statement.execute("ALTER TABLE player_stats ADD COLUMN unlocked_cosmetics VARCHAR(1000) DEFAULT ''"); } catch (SQLException ignored) {}
+            try { statement.execute("ALTER TABLE player_stats ADD COLUMN elo_data VARCHAR(2000) DEFAULT ''"); } catch (SQLException ignored) {}
             statement.execute("CREATE TABLE IF NOT EXISTS duel_rewards (" +
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT, " +
                     "winner_uuid VARCHAR(36) NOT NULL, " +

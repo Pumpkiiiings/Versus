@@ -239,7 +239,31 @@ public enum Setting {
     DUELGROUP_HELP_DECLINEDUEL("party.help", Type.STRING, FileType.MESSAGES),
 
     ESSENTIALS_NICKNAMES_ENABLED("dependencies.placeholderAPI", Type.BOOLEAN),
-    ITEMS_ADDER_FOR_KITS("dependencies.itemsadder", Type.BOOLEAN);
+    ITEMS_ADDER_FOR_KITS("dependencies.itemsadder", Type.BOOLEAN),
+
+    RANKED_BASE_ELO("ranked", Type.NUMBER),
+    RANKED_K_FACTOR("ranked", Type.NUMBER),
+    RANKED_QUEUE_BASE_ELO_DIFF("ranked.queue", Type.NUMBER),
+    RANKED_QUEUE_ELO_DIFF_PER_SECOND("ranked.queue", Type.NUMBER),
+    RANKED_SEASON_REWARDS_TOP_1_XP("ranked.season.rewards", Type.NUMBER),
+    RANKED_SEASON_REWARDS_TOP_2_XP("ranked.season.rewards", Type.NUMBER),
+    RANKED_SEASON_REWARDS_TOP_3_XP("ranked.season.rewards", Type.NUMBER),
+    
+    RANKED_QUEUE_JOIN("ranked.messages", Type.STRING, FileType.MESSAGES),
+    RANKED_QUEUE_LEAVE("ranked.messages", Type.STRING, FileType.MESSAGES),
+    RANKED_QUEUE_MATCH_FOUND("ranked.messages", Type.STRING, FileType.MESSAGES),
+    RANKED_ELO_CHANGE_WINNER("ranked.messages", Type.STRING, FileType.MESSAGES),
+    RANKED_ELO_CHANGE_LOSER("ranked.messages", Type.STRING, FileType.MESSAGES),
+    RANKED_SEASON_ENDED_BROADCAST("ranked.messages", Type.STRING, FileType.MESSAGES),
+    
+    RANKED_MENU_TITLE("ranked.menus.ranked", Type.STRING, FileType.MESSAGES),
+    RANKED_MENU_LORE_JOIN("ranked.menus.ranked", Type.STRING, FileType.MESSAGES),
+    RANKED_MENU_LORE_LEAVE("ranked.menus.ranked", Type.STRING, FileType.MESSAGES),
+    RANKED_MENU_LORE_ELO("ranked.menus.ranked", Type.STRING, FileType.MESSAGES),
+
+    TOP_MENU_TITLE("ranked.menus.top", Type.STRING, FileType.MESSAGES),
+    TOP_MENU_LORE_ELO("ranked.menus.top", Type.STRING, FileType.MESSAGES),
+    TOP_MENU_NO_PLAYERS("ranked.menus.top", Type.STRING, FileType.MESSAGES);
 
     public Object value;
     public String path;

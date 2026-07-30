@@ -22,3 +22,5 @@ commands:
     description: Test cosmetics and other features.
   versustats:
     description: Manage player stats.
+  ranked:
+    description: Ranked matchmaking commands.

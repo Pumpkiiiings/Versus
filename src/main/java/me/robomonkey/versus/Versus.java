@@ -152,6 +152,7 @@ public final class Versus extends JavaPlugin {
         new me.robomonkey.versus.duel.command.DuelGroupCommand();
         new RootVersusTestCommand();
         new RootVersusStatsCommand();
+        new me.robomonkey.versus.ranked.command.RootRankedCommand();
     }
 
     private void registerMetrics() {

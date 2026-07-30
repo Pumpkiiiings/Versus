@@ -212,10 +212,10 @@ public abstract class AbstractCommand {
 
     List<String> getBuiltinCompletionOptions(CommandSender sender) {
         List<String> allowedCompletions = getBranches().stream()
-                .filter(branch -> !branch.isPermissionRequired() || sender.hasPermission(branch.getPermission()))
+                .filter(branch -> !branch.isPermissionRequired() || branch.getPermission() == null || sender.hasPermission(branch.getPermission()))
                 .map(branch -> branch.getCommand())
                 .collect(Collectors.toList());
-        if (sender.hasPermission(this.getPermission())) allowedCompletions.addAll(additionalCompletions);
+        if (this.getPermission() == null || sender.hasPermission(this.getPermission())) allowedCompletions.addAll(additionalCompletions);
         return allowedCompletions;
     }
 
@@ -257,7 +257,7 @@ public abstract class AbstractCommand {
     }
 
     void dispatchCommand(CommandSender sender, String[] args) {
-        if (permissionRequired && !sender.hasPermission(permission)) {
+        if (permissionRequired && permission != null && !sender.hasPermission(permission)) {
             sender.sendMessage(permissionErrorMessage);
             return;
         }

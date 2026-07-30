@@ -45,7 +45,8 @@ public class StatsManager {
                                 rs.getInt("best_streak"),
                                 normalizeEffectId(rs.getString("kill_effect"), "K_NONE"),
                                 normalizeEffectId(rs.getString("victory_effect"), "V_NONE"),
-                                rs.getString("unlocked_cosmetics")
+                                rs.getString("unlocked_cosmetics"),
+                                rs.getString("elo_data")
                         );
                         statsCache.put(player.getUniqueId(), stats);
                     } else {
@@ -72,7 +73,7 @@ public class StatsManager {
             try {
                 Connection conn = DatabaseManager.getInstance().getConnection();
                 try (PreparedStatement stmt = conn.prepareStatement(
-                        "MERGE INTO player_stats (uuid, name, wins, losses, current_streak, best_streak, kill_effect, victory_effect, unlocked_cosmetics) KEY (uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "MERGE INTO player_stats (uuid, name, wins, losses, current_streak, best_streak, kill_effect, victory_effect, unlocked_cosmetics, elo_data) KEY (uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     stmt.setString(1, stats.getUuid().toString());
                     stmt.setString(2, stats.getName());
                     stmt.setInt(3, stats.getWins());
@@ -82,6 +83,7 @@ public class StatsManager {
                     stmt.setString(7, stats.getActiveKillEffect());
                     stmt.setString(8, stats.getActiveVictoryEffect());
                     stmt.setString(9, stats.getUnlockedCosmeticsString());
+                    stmt.setString(10, stats.getEloDataString());
                     stmt.executeUpdate();
                 }
             } catch (SQLException e) {

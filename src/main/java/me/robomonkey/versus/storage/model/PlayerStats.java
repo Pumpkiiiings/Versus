@@ -12,12 +12,17 @@ public class PlayerStats {
     private String activeKillEffect = "NONE";
     private String activeVictoryEffect = "NONE";
     private final java.util.Set<String> unlockedCosmetics = new java.util.HashSet<>();
+    private final java.util.Map<String, Integer> eloMap = new java.util.HashMap<>();
 
     public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak) {
         this(uuid, name, wins, losses, currentStreak, bestStreak, "K_NONE", "V_NONE");
     }
 
     public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect, String unlockedCosmeticsStr) {
+        this(uuid, name, wins, losses, currentStreak, bestStreak, activeKillEffect, activeVictoryEffect, unlockedCosmeticsStr, "");
+    }
+
+    public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect, String unlockedCosmeticsStr, String eloDataStr) {
         this.uuid = uuid;
         this.name = name;
         this.wins = wins;
@@ -29,6 +34,23 @@ public class PlayerStats {
         if (unlockedCosmeticsStr != null && !unlockedCosmeticsStr.isEmpty()) {
             this.unlockedCosmetics.addAll(java.util.Arrays.asList(unlockedCosmeticsStr.split(",")));
         }
+        if (eloDataStr != null && !eloDataStr.isEmpty()) {
+            this.eloMap.putAll(parseEloData(eloDataStr));
+        }
+    }
+
+    public static java.util.Map<String, Integer> parseEloData(String eloDataStr) {
+        java.util.Map<String, Integer> map = new java.util.HashMap<>();
+        if (eloDataStr == null || eloDataStr.isEmpty()) return map;
+        for (String entry : eloDataStr.split(",")) {
+            String[] split = entry.split(":");
+            if (split.length == 2) {
+                try {
+                    map.put(split[0], Integer.parseInt(split[1]));
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        return map;
     }
 
     public PlayerStats(UUID uuid, String name, int wins, int losses, int currentStreak, int bestStreak, String activeKillEffect, String activeVictoryEffect) {
@@ -45,6 +67,23 @@ public class PlayerStats {
 
     public String getUnlockedCosmeticsString() {
         return String.join(",", unlockedCosmetics);
+    }
+
+    public int getElo(String kitName) {
+        int baseElo = me.robomonkey.versus.config.model.Settings.getNumber(me.robomonkey.versus.config.model.Setting.RANKED_BASE_ELO);
+        return eloMap.getOrDefault(kitName, baseElo);
+    }
+
+    public void setElo(String kitName, int elo) {
+        eloMap.put(kitName, elo);
+    }
+
+    public String getEloDataString() {
+        java.util.List<String> list = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, Integer> entry : eloMap.entrySet()) {
+            list.add(entry.getKey() + ":" + entry.getValue());
+        }
+        return String.join(",", list);
     }
 
     public UUID getUuid() { return uuid; }

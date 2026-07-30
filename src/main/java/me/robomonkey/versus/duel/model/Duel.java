@@ -41,6 +41,7 @@ public class Duel {
     private double betAmount = 0.0;
     private me.robomonkey.versus.betting.model.BettingSession bettingSession = null;
     private me.robomonkey.versus.kit.model.Kit kit;
+    private boolean isRanked = false;
 
     public Duel(Arena arena, List<Player> team1, List<Player> team2, me.robomonkey.versus.kit.model.Kit kit) {
         this.team1.addAll(team1);
@@ -49,6 +50,14 @@ public class Duel {
         this.players.addAll(team2);
         this.activeArena = arena;
         this.kit = kit;
+    }
+
+    public boolean isRanked() {
+        return isRanked;
+    }
+
+    public void setRanked(boolean ranked) {
+        this.isRanked = ranked;
     }
 
     public me.robomonkey.versus.kit.model.Kit getKit() {

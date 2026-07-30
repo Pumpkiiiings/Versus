@@ -422,6 +422,37 @@ public class DuelManager {
             }
         }
 
+        // Handle Ranked ELO updates
+        if (duel.isRanked() && winners.size() == 1 && losers.size() == 1) {
+            Player winner = Bukkit.getPlayer(winners.get(0));
+            Player loser = Bukkit.getPlayer(losers.get(0));
+            if (winner != null && loser != null) {
+                PlayerStats winnerStats = StatsManager.getInstance().getStats(winner);
+                PlayerStats loserStats = StatsManager.getInstance().getStats(loser);
+                
+                String kitName = duel.getKit() != null ? duel.getKit().getName() : "Global";
+                int winnerElo = winnerStats.getElo(kitName);
+                int loserElo = loserStats.getElo(kitName);
+                
+                int[] newElos = me.robomonkey.versus.util.EloCalculator.calculateElo(winnerElo, loserElo);
+                winnerStats.setElo(kitName, newElos[0]);
+                loserStats.setElo(kitName, newElos[1]);
+                
+                int winnerGain = newElos[0] - winnerElo;
+                int loserLoss = loserElo - newElos[1];
+                
+                me.robomonkey.versus.config.model.Placeholder oldEloWinner = new me.robomonkey.versus.config.model.Placeholder("%old_elo%", String.valueOf(winnerElo));
+                me.robomonkey.versus.config.model.Placeholder newEloWinner = new me.robomonkey.versus.config.model.Placeholder("%new_elo%", String.valueOf(newElos[0]));
+                me.robomonkey.versus.config.model.Placeholder diffWinner = new me.robomonkey.versus.config.model.Placeholder("%diff%", String.valueOf(winnerGain));
+                winner.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_WINNER, oldEloWinner, newEloWinner, diffWinner));
+
+                me.robomonkey.versus.config.model.Placeholder oldEloLoser = new me.robomonkey.versus.config.model.Placeholder("%old_elo%", String.valueOf(loserElo));
+                me.robomonkey.versus.config.model.Placeholder newEloLoser = new me.robomonkey.versus.config.model.Placeholder("%new_elo%", String.valueOf(newElos[1]));
+                me.robomonkey.versus.config.model.Placeholder diffLoser = new me.robomonkey.versus.config.model.Placeholder("%diff%", String.valueOf(loserLoss));
+                loser.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_LOSER, oldEloLoser, newEloLoser, diffLoser));
+            }
+        }
+
         // Handle stats
         for (UUID w : winners) {
             Player winner = Bukkit.getPlayer(w);
@@ -505,6 +536,7 @@ public class DuelManager {
     }
     
     private void extricateLoser(Player player, Duel duel) {
+        me.robomonkey.versus.listener.combat.JustCombatListener.untagPlayer(player);
         restoreData(player, false);
         resetAttributes(player);
         unregisterFromDuel(player);
@@ -603,7 +635,8 @@ public class DuelManager {
                         new BlockPlaceListener(),
                         new DamageEventListener(),
                         new EntityTagListener(),
-                        new me.robomonkey.versus.listener.combat.EnderPearlListener())
+                        new me.robomonkey.versus.listener.combat.EnderPearlListener(),
+                        new me.robomonkey.versus.listener.combat.JustCombatListener())
                 .forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, Versus.getInstance()));
     }
 
@@ -613,6 +646,7 @@ public class DuelManager {
     }
 
     private void extricateWinner(Player player, Duel duel) {
+        me.robomonkey.versus.listener.combat.JustCombatListener.untagPlayer(player);
         restoreData(player, true);
         resetAttributes(player);
         removeDuel(duel);
