@@ -82,6 +82,7 @@ public class Settings {
         Bukkit.getScheduler().runTaskAsynchronously(Versus.getInstance(), () -> {
             registerConfig();
             MessageUtil.updateColors();
+            me.robomonkey.versus.ranked.manager.RankManager.getInstance().reload();
             Bukkit.getScheduler().runTask(Versus.getInstance(), after);
         });
     }
@@ -159,15 +160,19 @@ public class Settings {
     }
 
     public static Color getColor(Setting setting) {
-        String colorStr = (String) setting.getValue();
-        if (colorMap.containsKey(colorStr)) {
-            return colorMap.get(colorStr);
-        } else {
-            String newKey = colorMap.keySet().stream()
-                    .max(Comparator.comparingInt(colorKey -> colorKey.compareToIgnoreCase(colorStr)))
-                    .get();
-            return colorMap.get(newKey);
-        }
+        Color color = lookupColor((String) setting.getValue());
+        if (color != null) return color;
+
+        Versus.error("Unknown color at '" + setting.getPath() + "' in config.yml. Valid options: "
+                + String.join(", ", new java.util.TreeSet<>(colorMap.keySet())) + ". Using the default instead.");
+
+        Color defaultColor = lookupColor(String.valueOf(setting.getDefaultValue()));
+        return defaultColor != null ? defaultColor : Color.ORANGE;
+    }
+
+    private static Color lookupColor(String name) {
+        if (name == null) return null;
+        return colorMap.get(name.trim().toLowerCase());
     }
 
     public static Sound getSong(Setting setting) {

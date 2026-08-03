@@ -44,6 +44,25 @@ public class VersusPlaceholderExpansion extends PlaceholderExpansion {
             }
         }
 
+        // Checked before "rank_" so the longer prefixes win.
+        if (params.startsWith("rank_progress_")) {
+            int elo = eloFor(player, params.substring(14));
+            return String.valueOf(me.robomonkey.versus.ranked.manager.RankManager.getInstance().getEloToNextRank(elo));
+        }
+
+        if (params.startsWith("rank_next_")) {
+            int elo = eloFor(player, params.substring(10));
+            me.robomonkey.versus.ranked.model.Rank next =
+                    me.robomonkey.versus.ranked.manager.RankManager.getInstance().getNextRank(elo);
+            return next == null ? "" : me.robomonkey.versus.util.MessageUtil.color(next.getDisplayName());
+        }
+
+        if (params.startsWith("rank_")) {
+            int elo = eloFor(player, params.substring(5));
+            return me.robomonkey.versus.util.MessageUtil.color(
+                    me.robomonkey.versus.ranked.manager.RankManager.getInstance().getDisplayName(elo));
+        }
+
         if (params.startsWith("elo_")) {
             String kitName = params.substring(4);
             me.robomonkey.versus.storage.model.PlayerStats stats = me.robomonkey.versus.storage.manager.StatsManager.getInstance().getStats(player);
@@ -84,5 +103,18 @@ public class VersusPlaceholderExpansion extends PlaceholderExpansion {
         }
 
         return null; // Placeholder is unknown
+    }
+
+    /**
+     * Resolves a player's ELO for the given kit name.
+     */
+    private int eloFor(Player player, String kitName) {
+        me.robomonkey.versus.storage.model.PlayerStats stats =
+                me.robomonkey.versus.storage.manager.StatsManager.getInstance().getStats(player);
+        if (stats == null) {
+            return me.robomonkey.versus.config.model.Settings.getNumber(
+                    me.robomonkey.versus.config.model.Setting.RANKED_BASE_ELO);
+        }
+        return stats.getElo(kitName);
     }
 }

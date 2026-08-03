@@ -142,6 +142,7 @@ public final class Versus extends JavaPlugin {
         if (arenaManager != null) {
             arenaManager.saveAllArenas();
         }
+        DatabaseManager.getInstance().closeConnection();
     }
 
     public void registerCommands() {

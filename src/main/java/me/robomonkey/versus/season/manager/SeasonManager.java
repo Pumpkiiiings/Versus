@@ -71,9 +71,15 @@ public class SeasonManager {
                 }
             }
 
-            // Reset all ELO data
-            try (Connection conn = DatabaseManager.getInstance().getConnection();
-                 PreparedStatement stmt = conn.prepareStatement("UPDATE player_stats SET elo_data = ''")) {
+            // Reset all ELO data.
+            // The connection is the plugin-wide singleton, so it must NOT be closed here.
+            Connection conn = DatabaseManager.getInstance().getConnection();
+            if (conn == null) {
+                executor.sendMessage(MessageUtil.color("&cFailed to reset season: no database connection."));
+                return;
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement("UPDATE player_stats SET elo_data = ''")) {
                 int reset = stmt.executeUpdate();
                 
                 // Clear cached players' ELO

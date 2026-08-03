@@ -32,8 +32,11 @@ public class LeaderboardManager {
     public void updateLeaderboards() {
         Map<String, List<LeaderboardEntry>> tempMap = new HashMap<>();
 
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT name, elo_data FROM player_stats");
+        // The connection is the plugin-wide singleton, so it must NOT be closed here.
+        Connection conn = DatabaseManager.getInstance().getConnection();
+        if (conn == null) return;
+
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT name, elo_data FROM player_stats");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -51,18 +54,26 @@ public class LeaderboardManager {
             }
 
         } catch (Exception e) {
+            // Keep the previous cache rather than wiping it because of a transient failure.
             Versus.error("Failed to update leaderboards from database: " + e.getMessage());
             e.printStackTrace();
+            return;
         }
 
         // Sort and limit to top 10 per kit
+        Map<String, List<LeaderboardEntry>> rebuilt = new HashMap<>();
         for (Map.Entry<String, List<LeaderboardEntry>> entry : tempMap.entrySet()) {
             List<LeaderboardEntry> sorted = entry.getValue().stream()
                     .sorted((e1, e2) -> Integer.compare(e2.getElo(), e1.getElo())) // Descending
                     .limit(10)
                     .collect(Collectors.toList());
-            topPlayersCache.put(entry.getKey(), sorted);
+            rebuilt.put(entry.getKey(), sorted);
         }
+
+        // Replace wholesale rather than merging, so kits that no longer have any rated
+        // players (for example right after a season reset) drop out of the cache.
+        topPlayersCache.keySet().retainAll(rebuilt.keySet());
+        topPlayersCache.putAll(rebuilt);
     }
 
     public List<LeaderboardEntry> getTop(String kitName) {

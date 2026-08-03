@@ -198,6 +198,30 @@ public class RequestManager {
         requested.sendMessage(requestNotification);
         EffectUtil.playSound(requested, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
         requested.spigot().sendMessage(requestMessage);
+        sendRivalryNotice(requesting, requested);
+    }
+
+    /**
+     * Shows both players their head-to-head record, so a challenge carries the weight of
+     * the previous duels between them. Skipped when they have never faced each other.
+     */
+    private void sendRivalryNotice(Player requesting, Player requested) {
+        me.robomonkey.versus.storage.manager.HistoryManager.getInstance()
+                .getHeadToHead(requesting.getUniqueId(), requested.getUniqueId(), score -> {
+                    if (score[0] == 0 && score[1] == 0) return;
+                    if (requesting.isOnline()) {
+                        requesting.sendMessage(Settings.getMessage(Setting.HISTORY_RIVALRY_NOTICE,
+                                new Placeholder("%player%", PAPIUtil.getName(requested)),
+                                new Placeholder("%wins%", String.valueOf(score[0])),
+                                new Placeholder("%losses%", String.valueOf(score[1]))));
+                    }
+                    if (requested.isOnline()) {
+                        requested.sendMessage(Settings.getMessage(Setting.HISTORY_RIVALRY_NOTICE,
+                                new Placeholder("%player%", PAPIUtil.getName(requesting)),
+                                new Placeholder("%wins%", String.valueOf(score[1])),
+                                new Placeholder("%losses%", String.valueOf(score[0]))));
+                    }
+                });
     }
 
     public void acceptRequest(Player requested) throws PlayerOfflineException {

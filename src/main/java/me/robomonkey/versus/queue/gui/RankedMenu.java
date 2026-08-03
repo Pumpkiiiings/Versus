@@ -7,6 +7,8 @@ import me.robomonkey.versus.Versus;
 import me.robomonkey.versus.kit.manager.KitManager;
 import me.robomonkey.versus.kit.model.Kit;
 import me.robomonkey.versus.queue.QueueManager;
+import me.robomonkey.versus.ranked.manager.RankManager;
+import me.robomonkey.versus.ranked.model.Rank;
 import me.robomonkey.versus.storage.manager.StatsManager;
 import me.robomonkey.versus.storage.model.PlayerStats;
 import me.robomonkey.versus.util.MenuManager;
@@ -53,16 +55,10 @@ public class RankedMenu {
             int elo = stats.getElo(kit.getName());
 
             String iconName = MessageUtil.color(
-                    config.getString("kit-icon.name", "&p{kit} Ranked")
-                            .replace("{kit}", kit.getName())
-                            .replace("{elo}", String.valueOf(elo))
-            );
+                    fill(config.getString("kit-icon.name", "&p{kit} Ranked"), kit, elo));
 
             List<String> lore = config.getStringList("kit-icon.lore").stream()
-                    .map(line -> MessageUtil.color(
-                            line.replace("{kit}", kit.getName())
-                                    .replace("{elo}", String.valueOf(elo))
-                    ))
+                    .map(line -> MessageUtil.color(fill(line, kit, elo)))
                     .collect(Collectors.toList());
 
             ItemStack displayItem = kit.getDisplayItem();
@@ -77,5 +73,18 @@ public class RankedMenu {
             });
             menu.addButton(button);
         }
+    }
+
+    /**
+     * Substitutes the placeholders available to ranked_queue.yml.
+     */
+    private String fill(String line, Kit kit, int elo) {
+        RankManager rankManager = RankManager.getInstance();
+        Rank next = rankManager.getNextRank(elo);
+        return line.replace("{kit}", kit.getName())
+                .replace("{elo}", String.valueOf(elo))
+                .replace("{rank}", rankManager.getDisplayName(elo))
+                .replace("{next_rank}", next != null ? next.getDisplayName() : "")
+                .replace("{progress}", String.valueOf(rankManager.getEloToNextRank(elo)));
     }
 }
