@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseManager {
-    private static DatabaseManager instance;
-    private Connection connection;
+    private static volatile DatabaseManager instance;
+    private volatile Connection connection;
 
     private DatabaseManager() {
         connect();
@@ -19,12 +19,16 @@ public class DatabaseManager {
 
     public static DatabaseManager getInstance() {
         if (instance == null) {
-            instance = new DatabaseManager();
+            synchronized (DatabaseManager.class) {
+                if (instance == null) {
+                    instance = new DatabaseManager();
+                }
+            }
         }
         return instance;
     }
 
-    private void connect() {
+    private synchronized void connect() {
         try {
             File dataFolder = new File(Versus.getInstance().getDataFolder(), "data");
             if (!dataFolder.exists()) {
@@ -72,13 +76,26 @@ public class DatabaseManager {
                     "xp INTEGER DEFAULT 0, " +
                     "claimed BOOLEAN DEFAULT FALSE" +
                     ")");
+            statement.execute("CREATE TABLE IF NOT EXISTS duel_history (" +
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+                    "winner_uuid VARCHAR(36) NOT NULL, " +
+                    "loser_uuid VARCHAR(36) NOT NULL, " +
+                    "winner_name VARCHAR(16), " +
+                    "loser_name VARCHAR(16), " +
+                    "kit_name VARCHAR(64), " +
+                    "ranked BOOLEAN DEFAULT FALSE, " +
+                    "timestamp BIGINT NOT NULL" +
+                    ")");
+            // Head-to-head lookups filter on both columns, so index each of them.
+            try { statement.execute("CREATE INDEX IF NOT EXISTS idx_history_winner ON duel_history (winner_uuid)"); } catch (SQLException ignored) {}
+            try { statement.execute("CREATE INDEX IF NOT EXISTS idx_history_loser ON duel_history (loser_uuid)"); } catch (SQLException ignored) {}
         } catch (SQLException e) {
             Versus.error("Failed to create database tables!");
             e.printStackTrace();
         }
     }
 
-    public Connection getConnection() {
+    public synchronized Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
                 connect();
@@ -89,7 +106,7 @@ public class DatabaseManager {
         return connection;
     }
 
-    public void closeConnection() {
+    public synchronized void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();

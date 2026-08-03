@@ -4,6 +4,9 @@ import me.robomonkey.versus.listener.combat.FireworkExplosionListener;
 import me.robomonkey.versus.listener.world.InteractEventListener;
 import me.robomonkey.versus.listener.player.RespawnEventListener;
 import me.robomonkey.versus.listener.combat.DamageEventListener;
+import me.robomonkey.versus.listener.combat.EnderPearlListener;
+import me.robomonkey.versus.listener.combat.JustCombatListener;
+import me.robomonkey.versus.util.EloCalculator;
 import me.robomonkey.versus.listener.world.BlockBreakListener;
 import me.robomonkey.versus.listener.world.BlockPlaceListener;
 import me.robomonkey.versus.listener.player.DeathEventListener;
@@ -21,6 +24,8 @@ import me.robomonkey.versus.duel.model.ReturnOption;
 import me.robomonkey.versus.duel.model.DuelState;
 import me.robomonkey.versus.kit.manager.KitManager;
 import me.robomonkey.versus.duel.model.Duel;
+import me.robomonkey.versus.ranked.manager.RankManager;
+import me.robomonkey.versus.ranked.model.Rank;
 
 import me.robomonkey.versus.Versus;
 import me.robomonkey.versus.arena.model.Arena;
@@ -28,6 +33,8 @@ import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.dependency.PAPIUtil;
 
 import me.robomonkey.versus.storage.manager.DataManager;
+import me.robomonkey.versus.storage.manager.HistoryManager;
+import me.robomonkey.versus.storage.model.DuelRecord;
 import me.robomonkey.versus.storage.model.PlayerData;
 import me.robomonkey.versus.storage.model.PlayerStats;
 import me.robomonkey.versus.storage.manager.StatsManager;
@@ -161,20 +168,32 @@ public class DuelManager {
     }
 
     public void setupDuel(Player playerOne, Player playerTwo) {
-        setupDuel(playerOne, playerTwo, arenaManager.getAvailableArena(), 0.0, me.robomonkey.versus.kit.manager.KitManager.getInstance().getDefaultKit());
+        setupDuel(playerOne, playerTwo, arenaManager.getAvailableArena(), 0.0, KitManager.getInstance().getDefaultKit());
     }
     
-    public void setupDuel(Player playerOne, Player playerTwo, Arena arena, double betAmount, me.robomonkey.versus.kit.model.Kit kit) {
+    public void setupDuel(Player playerOne, Player playerTwo, Arena arena, double betAmount, Kit kit) {
         setupGroupDuel(List.of(playerOne), List.of(playerTwo), arena, betAmount, kit);
     }
 
-    public void setupGroupDuel(List<Player> team1, List<Player> team2, Arena arena, double betAmount, me.robomonkey.versus.kit.model.Kit kit) {
+    public void setupGroupDuel(List<Player> team1, List<Player> team2, Arena arena, double betAmount, Kit kit) {
         Duel newDuel = createNewDuel(team1, team2, arena, kit);
         newDuel.setBetAmount(betAmount);
         executeDuelSetup(newDuel, team1, team2);
     }
     
-    public void registerDuel(List<Player> team1, List<Player> team2, me.robomonkey.versus.betting.model.BettingSession session) {
+    /**
+     * Starts a ranked 1v1 match. Unlike setupDuel, the duel is flagged as ranked before
+     * setup so ELO is applied when it ends.
+     */
+    public void setupRankedDuel(Player playerOne, Player playerTwo, Arena arena, Kit kit) {
+        List<Player> team1 = List.of(playerOne);
+        List<Player> team2 = List.of(playerTwo);
+        Duel newDuel = createNewDuel(team1, team2, arena, kit);
+        newDuel.setRanked(true);
+        executeDuelSetup(newDuel, team1, team2);
+    }
+
+    public void registerDuel(List<Player> team1, List<Player> team2, BettingSession session) {
         Arena arena = arenaManager.getArena(session.getArenaName());
         Duel newDuel = createNewDuel(team1, team2, arena, session.getKit());
         newDuel.setBettingSession(session);
@@ -199,7 +218,7 @@ public class DuelManager {
         });
         populateKits(newDuel);
         newDuel.startCountdown(() -> commenceDuel(newDuel));
-        newDuel.getPlayers().forEach(me.robomonkey.versus.arena.manager.ArenaVisibilityManager::updateVisibility);
+        newDuel.getPlayers().forEach(ArenaVisibilityManager::updateVisibility);
         if (newDuel.isPublic()) announceDuelStart(newDuel);
     }
 
@@ -233,13 +252,30 @@ public class DuelManager {
     public void announceDuelEnd(Duel duel) {
         if (duel.getWinners().isEmpty() || duel.getLosers().isEmpty()) return;
         
-        String winners = String.join(", ", duel.getWinners().stream().map(u -> Bukkit.getPlayer(u).getName()).toArray(String[]::new));
-        String losers = String.join(", ", duel.getLosers().stream().map(u -> Bukkit.getPlayer(u).getName()).toArray(String[]::new));
-        
+        String winners = joinNames(duel.getWinners());
+        String losers = joinNames(duel.getLosers());
+
         String announcementMessage = Settings.getMessage(Setting.DUEL_END_ANNOUNCEMENT,
                 Placeholder.of("%winner%", winners),
                 Placeholder.of("%loser%", losers));
         Bukkit.broadcastMessage(announcementMessage);
+    }
+
+    /**
+     * Resolves a list of UUIDs into a comma-separated name string. Players who have already
+     * logged out are resolved through their offline profile so the announcement never fails.
+     */
+    private String joinNames(List<UUID> uuids) {
+        return uuids.stream()
+                .map(this::resolveName)
+                .collect(java.util.stream.Collectors.joining(", "));
+    }
+
+    private String resolveName(UUID uuid) {
+        Player online = Bukkit.getPlayer(uuid);
+        if (online != null) return online.getName();
+        String offlineName = Bukkit.getOfflinePlayer(uuid).getName();
+        return offlineName != null ? offlineName : uuid.toString();
     }
 
 
@@ -248,7 +284,7 @@ public class DuelManager {
         boolean isSpectator = false;
         
         if (currentDuel == null && isSpectating(player)) {
-            currentDuel = me.robomonkey.versus.arena.manager.ArenaVisibilityManager.getSpectatingDuel(player);
+            currentDuel = ArenaVisibilityManager.getSpectatingDuel(player);
             isSpectator = true;
         }
 
@@ -280,7 +316,7 @@ public class DuelManager {
 
                 long lastWarning = outOfBoundsCooldown.getOrDefault(player.getUniqueId(), 0L);
                 if (System.currentTimeMillis() - lastWarning > 3000) { // 3 seconds cooldown
-                    player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ERROR_OUT_OF_BOUNDS));
+                    player.sendMessage(Settings.getMessage(Setting.ERROR_OUT_OF_BOUNDS));
                     player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
                     outOfBoundsCooldown.put(player.getUniqueId(), System.currentTimeMillis());
                 }
@@ -308,7 +344,7 @@ public class DuelManager {
                 
                 // Move player to spectate mode
                 loser.setGameMode(GameMode.SPECTATOR);
-                loser.sendMessage(MessageUtil.color(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.PARTY_DIED_SPECTATING)));
+                loser.sendMessage(MessageUtil.color(Settings.getMessage(Setting.PARTY_DIED_SPECTATING)));
                 
                 // Check if entire team is dead
                 boolean team1Alive = false;
@@ -333,7 +369,7 @@ public class DuelManager {
                     registerDuelCompletion(team1, team2, currentDuel);
                 }
             } catch (Exception e) {
-                me.robomonkey.versus.Versus.error("An error occurred while processing player death in duel: " + e.getMessage());
+                Versus.error("An error occurred while processing player death in duel: " + e.getMessage());
                 e.printStackTrace();
                 // Force end the duel as a draw to prevent players getting stuck
                 registerDuelCompletion(new java.util.ArrayList<>(), currentDuel.getPlayers(), currentDuel);
@@ -379,7 +415,7 @@ public class DuelManager {
         List<UUID> losers = duel.getLosers();
         
         // Handle bet payout
-        me.robomonkey.versus.betting.model.BettingSession bettingSession = duel.getBettingSession();
+        BettingSession bettingSession = duel.getBettingSession();
         if (bettingSession != null) {
             double potMoney = bettingSession.getMoney(bettingSession.getPlayer1()) + bettingSession.getMoney(bettingSession.getPlayer2());
             int potXp = bettingSession.getXp(bettingSession.getPlayer1()) + bettingSession.getXp(bettingSession.getPlayer2());
@@ -434,24 +470,33 @@ public class DuelManager {
                 int winnerElo = winnerStats.getElo(kitName);
                 int loserElo = loserStats.getElo(kitName);
                 
-                int[] newElos = me.robomonkey.versus.util.EloCalculator.calculateElo(winnerElo, loserElo);
+                int[] newElos = EloCalculator.calculateElo(winnerElo, loserElo);
                 winnerStats.setElo(kitName, newElos[0]);
                 loserStats.setElo(kitName, newElos[1]);
                 
                 int winnerGain = newElos[0] - winnerElo;
                 int loserLoss = loserElo - newElos[1];
                 
-                me.robomonkey.versus.config.model.Placeholder oldEloWinner = new me.robomonkey.versus.config.model.Placeholder("%old_elo%", String.valueOf(winnerElo));
-                me.robomonkey.versus.config.model.Placeholder newEloWinner = new me.robomonkey.versus.config.model.Placeholder("%new_elo%", String.valueOf(newElos[0]));
-                me.robomonkey.versus.config.model.Placeholder diffWinner = new me.robomonkey.versus.config.model.Placeholder("%diff%", String.valueOf(winnerGain));
-                winner.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_WINNER, oldEloWinner, newEloWinner, diffWinner));
+                RankManager rankManager = RankManager.getInstance();
 
-                me.robomonkey.versus.config.model.Placeholder oldEloLoser = new me.robomonkey.versus.config.model.Placeholder("%old_elo%", String.valueOf(loserElo));
-                me.robomonkey.versus.config.model.Placeholder newEloLoser = new me.robomonkey.versus.config.model.Placeholder("%new_elo%", String.valueOf(newElos[1]));
-                me.robomonkey.versus.config.model.Placeholder diffLoser = new me.robomonkey.versus.config.model.Placeholder("%diff%", String.valueOf(loserLoss));
-                loser.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_LOSER, oldEloLoser, newEloLoser, diffLoser));
+                Placeholder oldEloWinner = new Placeholder("%old_elo%", String.valueOf(winnerElo));
+                Placeholder newEloWinner = new Placeholder("%new_elo%", String.valueOf(newElos[0]));
+                Placeholder diffWinner = new Placeholder("%diff%", String.valueOf(winnerGain));
+                Placeholder rankWinner = new Placeholder("%rank%", rankManager.getDisplayName(newElos[0]));
+                winner.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_WINNER, oldEloWinner, newEloWinner, diffWinner, rankWinner));
+
+                Placeholder oldEloLoser = new Placeholder("%old_elo%", String.valueOf(loserElo));
+                Placeholder newEloLoser = new Placeholder("%new_elo%", String.valueOf(newElos[1]));
+                Placeholder diffLoser = new Placeholder("%diff%", String.valueOf(loserLoss));
+                Placeholder rankLoser = new Placeholder("%rank%", rankManager.getDisplayName(newElos[1]));
+                loser.sendMessage(Settings.getMessage(Setting.RANKED_ELO_CHANGE_LOSER, oldEloLoser, newEloLoser, diffLoser, rankLoser));
+
+                announceRankChange(winner, winnerElo, newElos[0]);
+                announceRankChange(loser, loserElo, newElos[1]);
             }
         }
+
+        recordHistory(duel, winners, losers);
 
         // Handle stats
         for (UUID w : winners) {
@@ -461,7 +506,9 @@ public class DuelManager {
                 winnerStats.addWin();
                 winnerStats.addStreak();
                 StatsManager.getInstance().savePlayer(winnerStats);
-                
+
+                announceMilestone(winner, winnerStats.getWins());
+
                 if (Settings.is(Setting.STREAK_BROADCAST_ENABLED)) {
                     int minStreak = Settings.getNumber(Setting.STREAK_BROADCAST_MINIMUM);
                     int interval = Settings.getNumber(Setting.STREAK_BROADCAST_INTERVAL);
@@ -517,6 +564,64 @@ public class DuelManager {
         }
     }
     
+    /**
+     * Stores the result in the duel history. Only 1v1 duels are recorded, since that is
+     * what the head-to-head record is about.
+     */
+    private void recordHistory(Duel duel, List<UUID> winners, List<UUID> losers) {
+        if (winners.size() != 1 || losers.size() != 1) return;
+
+        UUID winner = winners.get(0);
+        UUID loser = losers.get(0);
+        String kitName = duel.getKit() != null ? duel.getKit().getName() : "Global";
+
+        HistoryManager.getInstance().record(new DuelRecord(
+                winner, loser, resolveName(winner), resolveName(loser),
+                kitName, duel.isRanked(), System.currentTimeMillis()));
+    }
+
+    /**
+     * Tells a player when their ELO change moved them into a different rank, and
+     * optionally broadcasts promotions to the server.
+     */
+    private void announceRankChange(Player player, int oldElo, int newElo) {
+        RankManager rankManager = RankManager.getInstance();
+        Rank oldRank = rankManager.getRank(oldElo);
+        Rank newRank = rankManager.getRank(newElo);
+
+        if (oldRank == null || newRank == null || oldRank.getId().equals(newRank.getId())) return;
+
+        boolean promoted = newRank.getMinimumElo() > oldRank.getMinimumElo();
+        Placeholder rank = new Placeholder("%rank%", newRank.getDisplayName());
+        Placeholder oldRankName = new Placeholder("%old_rank%", oldRank.getDisplayName());
+
+        player.sendMessage(Settings.getMessage(
+                promoted ? Setting.RANKED_RANK_UP : Setting.RANKED_RANK_DOWN, rank, oldRankName));
+        EffectUtil.playSound(player, promoted
+                ? org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE
+                : org.bukkit.Sound.ENTITY_VILLAGER_NO);
+
+        if (promoted && Settings.is(Setting.RANKED_RANK_UP_BROADCAST_ENABLED)) {
+            Bukkit.broadcastMessage(Settings.getMessage(Setting.RANKED_RANK_UP_BROADCAST,
+                    new Placeholder("%player%", PAPIUtil.getName(player)), rank));
+        }
+    }
+
+    /**
+     * Broadcasts when a player reaches one of the configured win milestones.
+     */
+    private void announceMilestone(Player winner, int totalWins) {
+        if (!Settings.is(Setting.MILESTONE_BROADCAST_ENABLED)) return;
+
+        List<Integer> milestones = Settings.getInstance().getConfig()
+                .getIntegerList("dueling.announcements.milestones");
+        if (!milestones.contains(totalWins)) return;
+
+        Bukkit.broadcastMessage(Settings.getMessage(Setting.MILESTONE_BROADCAST_MESSAGE,
+                Placeholder.of("%player%", PAPIUtil.getName(winner)),
+                Placeholder.of("%wins%", String.valueOf(totalWins))));
+    }
+
     private void finishDuelCleanup(Duel duel, List<UUID> winners, List<UUID> losers) {
         for (UUID w : winners) {
             Player winner = Bukkit.getPlayer(w);
@@ -536,11 +641,11 @@ public class DuelManager {
     }
     
     private void extricateLoser(Player player, Duel duel) {
-        me.robomonkey.versus.listener.combat.JustCombatListener.untagPlayer(player);
+        JustCombatListener.untagPlayer(player);
         restoreData(player, false);
         resetAttributes(player);
         unregisterFromDuel(player);
-        me.robomonkey.versus.arena.manager.ArenaVisibilityManager.updateVisibility(player);
+        ArenaVisibilityManager.updateVisibility(player);
     }
     
     public void addSpectator(Player player, Duel duel) {
@@ -548,7 +653,7 @@ public class DuelManager {
         spectatorGameModes.put(player.getUniqueId(), player.getGameMode());
         player.setGameMode(org.bukkit.GameMode.SPECTATOR);
         player.teleport(duel.getArena().getSpectateLocation());
-        me.robomonkey.versus.arena.manager.ArenaVisibilityManager.addSpectator(player, duel);
+        ArenaVisibilityManager.addSpectator(player, duel);
     }
     
     public boolean isSpectating(Player player) {
@@ -564,7 +669,7 @@ public class DuelManager {
             player.setAllowFlight(false);
             player.setFlying(false);
             player.removePotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY);
-            me.robomonkey.versus.arena.manager.ArenaVisibilityManager.removeSpectator(player);
+            ArenaVisibilityManager.removeSpectator(player);
         }
     }
     
@@ -581,7 +686,7 @@ public class DuelManager {
                     p.setAllowFlight(false);
                     p.setFlying(false);
                     p.removePotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY);
-                    me.robomonkey.versus.arena.manager.ArenaVisibilityManager.removeSpectator(p);
+                    ArenaVisibilityManager.removeSpectator(p);
                 }
                 else p.teleport(p.getWorld().getSpawnLocation());
             }
@@ -635,8 +740,8 @@ public class DuelManager {
                         new BlockPlaceListener(),
                         new DamageEventListener(),
                         new EntityTagListener(),
-                        new me.robomonkey.versus.listener.combat.EnderPearlListener(),
-                        new me.robomonkey.versus.listener.combat.JustCombatListener())
+                        new EnderPearlListener(),
+                        new JustCombatListener())
                 .forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, Versus.getInstance()));
     }
 
@@ -646,12 +751,12 @@ public class DuelManager {
     }
 
     private void extricateWinner(Player player, Duel duel) {
-        me.robomonkey.versus.listener.combat.JustCombatListener.untagPlayer(player);
+        JustCombatListener.untagPlayer(player);
         restoreData(player, true);
         resetAttributes(player);
         removeDuel(duel);
         EffectUtil.stopDuelMusic(player);
-        me.robomonkey.versus.arena.manager.ArenaVisibilityManager.updateVisibility(player);
+        ArenaVisibilityManager.updateVisibility(player);
         RequestManager.getInstance().notifyDuelCompletion();
     }
 
@@ -674,12 +779,12 @@ public class DuelManager {
 
     private void renderWinEffects(Player winner, Duel duel) {
         boolean hasCustomEffect = false;
-        me.robomonkey.versus.storage.model.PlayerStats stats = StatsManager.getInstance().getStats(winner);
+        PlayerStats stats = StatsManager.getInstance().getStats(winner);
         if (stats != null) {
             String effectId = stats.getActiveVictoryEffect();
             if (effectId != null && !effectId.equals("V_NONE")) {
                 try {
-                    me.robomonkey.versus.cosmetic.model.VictoryEffect eff = me.robomonkey.versus.cosmetic.manager.CosmeticsManager.getInstance().getVictoryEffect(effectId);
+                    VictoryEffect eff = CosmeticsManager.getInstance().getVictoryEffect(effectId);
                     if (eff != null) {
                         eff.play(winner.getLocation());
                         hasCustomEffect = true;
@@ -706,10 +811,10 @@ public class DuelManager {
         if (!winners.isEmpty()) {
             Player firstWinner = Bukkit.getPlayer(winners.get(0));
             if (firstWinner != null) {
-                me.robomonkey.versus.storage.model.PlayerStats stats = StatsManager.getInstance().getStats(firstWinner);
+                PlayerStats stats = StatsManager.getInstance().getStats(firstWinner);
                 if (stats != null) {
                     try {
-                        me.robomonkey.versus.cosmetic.model.KillEffect eff = me.robomonkey.versus.cosmetic.manager.CosmeticsManager.getInstance().getKillEffect(stats.getActiveKillEffect());
+                        KillEffect eff = CosmeticsManager.getInstance().getKillEffect(stats.getActiveKillEffect());
                         if (eff != null) eff.play(loser.getLocation());
                     } catch (Exception ignored) {}
                 }

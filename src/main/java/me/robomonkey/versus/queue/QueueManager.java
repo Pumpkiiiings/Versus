@@ -3,6 +3,9 @@ package me.robomonkey.versus.queue;
 import me.robomonkey.versus.Versus;
 import me.robomonkey.versus.arena.manager.ArenaManager;
 import me.robomonkey.versus.arena.model.Arena;
+import me.robomonkey.versus.config.model.Placeholder;
+import me.robomonkey.versus.config.model.Setting;
+import me.robomonkey.versus.config.model.Settings;
 import me.robomonkey.versus.duel.manager.DuelManager;
 import me.robomonkey.versus.duel.model.Duel;
 import me.robomonkey.versus.kit.model.Kit;
@@ -33,14 +36,14 @@ public class QueueManager {
     public void addPlayer(Player player, Kit kit, int elo) {
         if (isInQueue(player)) return;
         if (DuelManager.getInstance().isDueling(player)) {
-            player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.ERROR_ALREADY_QUEUEING));
+            player.sendMessage(Settings.getMessage(Setting.ERROR_ALREADY_QUEUEING));
             return;
         }
         queue.add(new QueueEntry(player, kit, elo));
         
-        me.robomonkey.versus.config.model.Placeholder kitPl = new me.robomonkey.versus.config.model.Placeholder("%kit%", kit.getName());
-        me.robomonkey.versus.config.model.Placeholder eloPl = new me.robomonkey.versus.config.model.Placeholder("%elo%", String.valueOf(elo));
-        player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.RANKED_QUEUE_JOIN, kitPl, eloPl));
+        Placeholder kitPl = new Placeholder("%kit%", kit.getName());
+        Placeholder eloPl = new Placeholder("%elo%", String.valueOf(elo));
+        player.sendMessage(Settings.getMessage(Setting.RANKED_QUEUE_JOIN, kitPl, eloPl));
     }
 
     public void removePlayer(Player player) {
@@ -49,7 +52,7 @@ public class QueueManager {
             QueueEntry entry = iter.next();
             if (entry.getPlayer().getUniqueId().equals(player.getUniqueId())) {
                 iter.remove();
-                player.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.RANKED_QUEUE_LEAVE));
+                player.sendMessage(Settings.getMessage(Setting.RANKED_QUEUE_LEAVE));
                 break;
             }
         }
@@ -75,26 +78,14 @@ public class QueueManager {
         }
         
         if (arena == null) {
-            p1.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.NO_ARENAS_AVAILABLE));
-            p2.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.NO_ARENAS_AVAILABLE));
+            p1.sendMessage(Settings.getMessage(Setting.NO_ARENAS_AVAILABLE));
+            p2.sendMessage(Settings.getMessage(Setting.NO_ARENAS_AVAILABLE));
             return;
         }
 
-        p1.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.RANKED_QUEUE_MATCH_FOUND));
-        p2.sendMessage(me.robomonkey.versus.config.model.Settings.getMessage(me.robomonkey.versus.config.model.Setting.RANKED_QUEUE_MATCH_FOUND));
+        p1.sendMessage(Settings.getMessage(Setting.RANKED_QUEUE_MATCH_FOUND));
+        p2.sendMessage(Settings.getMessage(Setting.RANKED_QUEUE_MATCH_FOUND));
 
-        // Set up the duel directly
-        Duel duel = new Duel(arena, List.of(p1), List.of(p2), entry1.getKit());
-        duel.setRanked(true);
-        DuelManager.getInstance().addDuel(duel);
-        
-        // This simulates what setupGroupDuel does internally
-        try {
-            java.lang.reflect.Method setupMethod = DuelManager.class.getDeclaredMethod("executeDuelSetup", Duel.class, List.class, List.class);
-            setupMethod.setAccessible(true);
-            setupMethod.invoke(DuelManager.getInstance(), duel, List.of(p1), List.of(p2));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        DuelManager.getInstance().setupRankedDuel(p1, p2, arena, entry1.getKit());
     }
 }

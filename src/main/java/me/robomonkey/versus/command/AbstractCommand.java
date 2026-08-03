@@ -10,9 +10,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractCommand {
-    public static String errorPrefix = Settings.getMessage(Setting.ERROR_PREFIX);
-    public static String permissionErrorMessage = errorPrefix + Settings.getMessage(Setting.NO_PERMISSION_MESSAGE);
-    public static String improperSenderErrorMessage = errorPrefix + Settings.getMessage(Setting.ONLY_PLAYERS_MESSAGE);
     protected String command;
     protected String permission;
     private String usage = "";
@@ -38,9 +35,21 @@ public abstract class AbstractCommand {
         Arrays.stream(branches).forEach(branch -> this.branches.add(branch));
     }
 
+    // Read from the config on every call so /versus reload takes effect immediately.
+    public static String getErrorPrefix() {
+        return Settings.getMessage(Setting.ERROR_PREFIX);
+    }
+
+    public static String getPermissionErrorMessage() {
+        return getErrorPrefix() + Settings.getMessage(Setting.NO_PERMISSION_MESSAGE);
+    }
+
+    public static String getImproperSenderErrorMessage() {
+        return getErrorPrefix() + Settings.getMessage(Setting.ONLY_PLAYERS_MESSAGE);
+    }
+
     public static void error(CommandSender sender, String message) {
-        String errorPrefix = Settings.getMessage(Setting.ERROR_PREFIX);
-        sender.sendMessage(errorPrefix + message);
+        sender.sendMessage(getErrorPrefix() + message);
     }
 
     public String getCommand() {
@@ -258,11 +267,11 @@ public abstract class AbstractCommand {
 
     void dispatchCommand(CommandSender sender, String[] args) {
         if (permissionRequired && permission != null && !sender.hasPermission(permission)) {
-            sender.sendMessage(permissionErrorMessage);
+            sender.sendMessage(getPermissionErrorMessage());
             return;
         }
         if (isPlayersOnly() && !(sender instanceof Player)) {
-            sender.sendMessage(improperSenderErrorMessage);
+            sender.sendMessage(getImproperSenderErrorMessage());
             return;
         }
         if (args.length == 0 && !argumentRequired) {

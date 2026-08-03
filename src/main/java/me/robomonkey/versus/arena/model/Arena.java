@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Arena {
-    public static Arena empty = null;
     private final String name;
     private final List<Duel> activeDuels;
     private Location spawnLocationOne;

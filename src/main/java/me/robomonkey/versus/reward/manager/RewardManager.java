@@ -27,13 +27,17 @@ import java.util.UUID;
  */
 public class RewardManager {
 
-    private static RewardManager instance;
+    private static volatile RewardManager instance;
 
     private RewardManager() {}
 
     public static RewardManager getInstance() {
         if (instance == null) {
-            instance = new RewardManager();
+            synchronized (RewardManager.class) {
+                if (instance == null) {
+                    instance = new RewardManager();
+                }
+            }
         }
         return instance;
     }

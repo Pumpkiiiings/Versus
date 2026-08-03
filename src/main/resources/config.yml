@@ -117,6 +117,10 @@ dueling:
     streak_broadcast_minimum: 5
     #The interval to broadcast (e.g. every 5 wins)
     streak_broadcast_interval: 5
+    #Should total-win milestones be broadcast to the whole server?
+    milestone_broadcast_enabled: true
+    #Total win counts that trigger a milestone broadcast.
+    milestones: [10, 25, 50, 100, 250, 500, 1000]
   effects:
     #enable or disable blindness when entering a duel.
     blindness_effects_enabled: true
@@ -177,6 +181,32 @@ dependencies:
 ranked:
   ranked_base_elo: 1000
   ranked_k_factor: 32
+  #Should rank promotions be announced to the whole server?
+  ranked_rank_up_broadcast_enabled: true
+  #Named ELO brackets. Add, remove or rename freely; order does not matter.
+  #A player's rank is the highest bracket whose minimum_elo they meet or exceed.
+  ranks:
+    bronce:
+      display_name: "&8Bronce"
+      minimum_elo: 0
+    plata:
+      display_name: "&7Plata"
+      minimum_elo: 900
+    oro:
+      display_name: "&6Oro"
+      minimum_elo: 1100
+    platino:
+      display_name: "&bPlatino"
+      minimum_elo: 1300
+    diamante:
+      display_name: "&3Diamante"
+      minimum_elo: 1500
+    maestro:
+      display_name: "&5Maestro"
+      minimum_elo: 1750
+    leyenda:
+      display_name: "&c&lLeyenda"
+      minimum_elo: 2000
   queue:
     ranked_queue_base_elo_diff: 50
     ranked_queue_elo_diff_per_second: 10

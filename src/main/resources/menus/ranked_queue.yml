@@ -5,8 +5,11 @@
 # Muestra un ícono por cada kit habilitado para ranked.
 #
 # Placeholders disponibles en lore/name de kit-icon:
-#   {kit}  → nombre del kit
-#   {elo}  → ELO actual del jugador para ese kit
+#   {kit}        → nombre del kit
+#   {elo}        → ELO actual del jugador para ese kit
+#   {rank}       → nombre del rango actual (ej. &6Oro)
+#   {next_rank}  → nombre del siguiente rango, vacío si ya está en el más alto
+#   {progress}   → ELO que falta para el siguiente rango, 0 si ya está en el más alto
 
 title: "&6⚔ &lRanked Matchmaking &6⚔"
 rows: 3
@@ -18,7 +21,9 @@ kit-icon:
   lore:
     - "&aHaz clic para unirte a la cola."
     - ""
+    - "&7Rango: {rank}"
     - "&7Tu ELO: &b{elo}"
+    - "&7Faltan &b{progress} &7para {next_rank}"
 
 # ── Relleno de fondo (slots vacíos) ─────────────
 empty-button:

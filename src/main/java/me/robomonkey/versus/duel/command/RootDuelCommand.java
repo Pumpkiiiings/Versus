@@ -2,7 +2,9 @@ package me.robomonkey.versus.duel.command;
 
 import me.robomonkey.versus.cosmetic.command.CosmeticsCommand;
 import me.robomonkey.versus.reward.command.RewardsCommand;
+import me.robomonkey.versus.storage.command.HistoryCommand;
 import me.robomonkey.versus.storage.command.StatsCommand;
+import me.robomonkey.versus.storage.command.VersusCommand;
 import me.robomonkey.versus.config.model.Placeholder;
 import me.robomonkey.versus.kit.model.Kit;
 
@@ -37,6 +39,8 @@ public class RootDuelCommand extends RootCommand {
                 new AcceptCommand(),
                 new ConfirmCommand(),
                 new StatsCommand(),
+                new HistoryCommand(),
+                new VersusCommand(),
                 new LeaveCommand(),
                 new RewardsCommand(),
                 new CosmeticsCommand());

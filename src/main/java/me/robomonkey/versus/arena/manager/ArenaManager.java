@@ -64,20 +64,12 @@ public class ArenaManager {
     }
 
     /**
-     * Returns first available arena in ArenaManager.arenaList.
-     * May return Arena.empty or null if no arenas are available.
-     *
-     * @return
+     * Returns a random available arena, or null if none are available.
      */
     public Arena getAvailableArena() {
         List<Arena> availableArenas = getAvailableArenas();
-        if (availableArenas.size() > 0) {
-            Random random = new Random();
-            int randomIndex = random.nextInt(availableArenas.size());
-            return availableArenas.get(randomIndex);
-        } else {
-            return Arena.empty;
-        }
+        if (availableArenas.isEmpty()) return null;
+        return availableArenas.get(new Random().nextInt(availableArenas.size()));
     }
 
     public void loadArenas() {
@@ -168,7 +160,6 @@ public class ArenaManager {
         }
 
         for (Arena arena : arenaList) {
-            if (!arena.isEnabled()) continue;
             File arenaFile = new File(arenasFolder, arena.getName() + ".yml");
             YamlConfiguration config = new YamlConfiguration();
             arena.saveToYaml(config);
@@ -188,6 +179,10 @@ public class ArenaManager {
 
     public void deleteArena(Arena arena) {
         arenaList.remove(arena);
+        File arenaFile = new File(new File(plugin.getDataFolder(), "arenas"), arena.getName() + ".yml");
+        if (arenaFile.exists() && !arenaFile.delete()) {
+            Versus.error("Could not delete arena file: " + arenaFile.getName());
+        }
         saveAllArenas();
     }
 

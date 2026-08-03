@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class KitData {
+    private static final List<String> DEFAULT_KITS = List.of("Default.yml", "NetheritePot.yml");
+
     private final Versus plugin;
     private final File kitsFolder;
 
@@ -29,6 +31,19 @@ public class KitData {
         kitsFolder = new File(plugin.getDataFolder(), "kits");
         if (!kitsFolder.exists()) {
             kitsFolder.mkdirs();
+        }
+        saveDefaultKits();
+    }
+
+    /**
+     * Copies the bundled example kits into the data folder, mirroring how menus and
+     * effects are handled. Existing files are never overwritten.
+     */
+    private void saveDefaultKits() {
+        for (String fileName : DEFAULT_KITS) {
+            if (!new File(kitsFolder, fileName).exists()) {
+                plugin.saveResource("kits/" + fileName, false);
+            }
         }
     }
 

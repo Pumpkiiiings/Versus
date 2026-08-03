@@ -24,3 +24,73 @@ commands:
     description: Manage player stats.
   ranked:
     description: Ranked matchmaking commands.
+
+# Permission checks are performed by AbstractCommand so the denial message stays
+# configurable in messages.yml. These entries exist so permission plugins can list
+# them and so the defaults below are applied.
+permissions:
+  versus.duel:
+    description: Allow access to /duel, /duelgroup, /versustats and reward claiming.
+    default: true
+  versus.spectate:
+    description: Allow access to /spectate.
+    default: true
+  versus.ranked:
+    description: Allow access to /ranked.
+    default: true
+    children:
+      versus.ranked.queue: true
+      versus.ranked.leave: true
+      versus.ranked.top: true
+  versus.ranked.queue:
+    description: Allow joining the ranked queue.
+    default: true
+  versus.ranked.leave:
+    description: Allow leaving the ranked queue.
+    default: true
+  versus.ranked.top:
+    description: Allow viewing the ranked leaderboard.
+    default: true
+  versus.arena:
+    description: Allow access to /arena.
+    default: op
+    children:
+      versus.arena.create: true
+      versus.arena.edit: true
+      versus.arena.list: true
+      versus.arena.set: true
+      versus.arena.setspawn: true
+      versus.arena.visit: true
+  versus.arena.create:
+    description: Allow access to /arena create.
+    default: op
+  versus.arena.edit:
+    description: Allow access to /arena edit.
+    default: op
+  versus.arena.list:
+    description: Allow access to /arena list.
+    default: op
+  versus.arena.set:
+    description: Allow access to /arena set.
+    default: op
+  versus.arena.setspawn:
+    description: Allow access to /arena setspawn.
+    default: op
+  versus.arena.visit:
+    description: Allow access to /arena visit.
+    default: op
+  versus.kit.save:
+    description: Allow access to /arena savekit.
+    default: op
+  versus.kit.load:
+    description: Allow access to /arena loadkit.
+    default: op
+  versus.kit.delete:
+    description: Allow access to /arena deletekit.
+    default: op
+  versus.admin:
+    description: Allow access to /versus, /versustest and season management.
+    default: op
+  versus.bypass:
+    description: Allow players to use any command while dueling.
+    default: op

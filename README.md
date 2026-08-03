@@ -37,11 +37,23 @@ First type /arena create <your_arena>. Clickable text will appear instructing yo
 * **/spectate <player>** Spectate <player>'s current duel.
 
 ## Permissions:
-* **versus.duel** Allow access to /duel.
-* **versus.spectate** Allow access to /spectate.
-* **versus.arena** Allow access to /arena.
-* **versus.arena.create** Allow access to /arena create.
-* **versus.arena.delete** Allow access to /arena delete.
-* **versus.arena.edit** Allow access to /arena edit.
-* **versus.arena.list** Allow access to /arena list.
-* **versus.bypass** Allow players to use any command while dueling.
+Defaults are shown in parentheses.
+
+* **versus.duel** (everyone) Allow access to /duel, /duelgroup, /versustats and reward claiming.
+* **versus.spectate** (everyone) Allow access to /spectate.
+* **versus.ranked** (everyone) Allow access to /ranked. Includes the three children below.
+* **versus.ranked.queue** (everyone) Allow joining the ranked queue.
+* **versus.ranked.leave** (everyone) Allow leaving the ranked queue.
+* **versus.ranked.top** (everyone) Allow viewing the ranked leaderboard.
+* **versus.arena** (op) Allow access to /arena. Includes all versus.arena.* children below.
+* **versus.arena.create** (op) Allow access to /arena create.
+* **versus.arena.edit** (op) Allow access to /arena edit.
+* **versus.arena.list** (op) Allow access to /arena list.
+* **versus.arena.set** (op) Allow access to /arena set.
+* **versus.arena.setspawn** (op) Allow access to /arena setspawn.
+* **versus.arena.visit** (op) Allow access to /arena visit.
+* **versus.kit.save** (op) Allow access to /arena savekit.
+* **versus.kit.load** (op) Allow access to /arena loadkit.
+* **versus.kit.delete** (op) Allow access to /arena deletekit.
+* **versus.admin** (op) Allow access to /versus, /versustest and season management.
+* **versus.bypass** (op) Allow players to use any command while dueling.
