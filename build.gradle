@@ -4,7 +4,7 @@ plugins {
 }
 
 group   = 'me.robomonkey'
-version = '1.8.4'
+version = '1.9.0'
 
 java {
     toolchain {
@@ -29,7 +29,7 @@ repositories {
     maven { url = 'https://jitpack.io' }
 
     // ItemsAdder / LoneLibs
-    maven { url = 'https://www.matteodev.it/spigot/public/maven/' }
+    maven { url = 'https://maven.devs.beer/' }
 
     // Vault
     maven { url = 'https://nexus.hc.to/content/repositories/pub_releases/' }
@@ -46,7 +46,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:api-itemsadder:3.6.1'
 
     // LoneLibs  (provided – needed to compile ItemsAdder API)
-    compileOnly 'dev.lone:LoneLibs:1.0.58'
+    // compileOnly 'dev.lone:LoneLibs:1.0.58'
 
     // Vault  (provided – soft-dependency)
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.h2database:h2:2.2.224'
 
     // PacketEvents
-    implementation 'com.github.retrooper:packetevents-spigot:2.13.0'
+    implementation 'com.github.retrooper:packetevents-spigot:2.14.0'
 }
 
 processResources {

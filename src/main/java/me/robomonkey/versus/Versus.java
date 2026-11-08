@@ -56,6 +56,7 @@ public final class Versus extends JavaPlugin {
     private final static String prefix = "[Versus]";
     private static final int pluginId = 23279;
     public static SpiGUI spiGUI;
+    private boolean packetEventsLoaded = false;
 
     public static void log(String message) {
         Bukkit.getServer().getLogger().info(prefix + " " + message);
@@ -101,18 +102,70 @@ public final class Versus extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
-        PacketEvents.getAPI().getSettings().bStats(true);
-        PacketEvents.getAPI().load();
+        instance = this;
+        try {
+            PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+            PacketEvents.getAPI().getSettings().bStats(true);
+            ensureCompatibleServerVersion();
+            PacketEvents.getAPI().load();
+            packetEventsLoaded = true;
+        } catch (Throwable t) {
+            error("Could not load PacketEvents: " + t.getMessage());
+            t.printStackTrace();
+        }
+    }
+
+    private void ensureCompatibleServerVersion() {
+        try {
+            com.github.retrooper.packetevents.manager.server.ServerManager serverManager = PacketEvents.getAPI().getServerManager();
+            com.github.retrooper.packetevents.manager.server.ServerVersion detected = serverManager.getVersion();
+            String bukkitVersion = Bukkit.getBukkitVersion();
+
+            boolean isModern = false;
+            try {
+                Class.forName("org.bukkit.entity.Display");
+                isModern = true;
+            } catch (ClassNotFoundException ignored) {
+                if (!bukkitVersion.contains("1.8")) {
+                    isModern = true;
+                }
+            }
+
+            if (detected == com.github.retrooper.packetevents.manager.server.ServerVersion.V_1_8_8 && isModern) {
+                com.github.retrooper.packetevents.manager.server.ServerVersion target = com.github.retrooper.packetevents.manager.server.ServerVersion.getLatest();
+                for (com.github.retrooper.packetevents.manager.server.ServerVersion val : com.github.retrooper.packetevents.manager.server.ServerVersion.reversedValues()) {
+                    if (bukkitVersion.contains(val.getReleaseName())) {
+                        target = val;
+                        break;
+                    }
+                }
+
+                java.lang.reflect.Field field = serverManager.getClass().getDeclaredField("serverVersion");
+                field.setAccessible(true);
+                field.set(serverManager, target);
+                log("Adjusted PacketEvents ServerVersion fallback from V_1_8_8 to " + target.name() + " for: " + bukkitVersion);
+            }
+        } catch (Throwable t) {
+            log("ServerVersion check notice: " + t.getMessage());
+        }
     }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        PacketEvents.getAPI().init();
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketVisibilityListener());
-        log("Versus has been enabled!");
         instance = this;
+        if (packetEventsLoaded) {
+            try {
+                PacketEvents.getAPI().init();
+                PacketEvents.getAPI().getEventManager().registerListener(new PacketVisibilityListener());
+            } catch (Throwable t) {
+                error("Could not initialize PacketEvents listener: " + t.getMessage());
+                t.printStackTrace();
+            }
+        } else {
+            error("PacketEvents was not loaded. Entity hiding in shared arenas will be disabled.");
+        }
+        log("Versus has been enabled!");
         DatabaseManager.getInstance();
         me.robomonkey.versus.reward.manager.RewardManager.getInstance().startCleanupTask();
         StatsManager.getInstance();
@@ -137,12 +190,20 @@ public final class Versus extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        PacketEvents.getAPI().terminate();
+        if (packetEventsLoaded) {
+            try {
+                PacketEvents.getAPI().terminate();
+            } catch (Throwable t) {
+                error("Error terminating PacketEvents: " + t.getMessage());
+            }
+        }
         log("Versus has been disabled!");
         if (arenaManager != null) {
             arenaManager.saveAllArenas();
         }
-        DatabaseManager.getInstance().closeConnection();
+        if (DatabaseManager.hasInstance()) {
+            DatabaseManager.getInstance().closeConnection();
+        }
     }
 
     public void registerCommands() {

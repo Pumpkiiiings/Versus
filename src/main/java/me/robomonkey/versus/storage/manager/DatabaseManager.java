@@ -17,6 +17,10 @@ public class DatabaseManager {
         setupTable();
     }
 
+    public static boolean hasInstance() {
+        return instance != null;
+    }
+
     public static DatabaseManager getInstance() {
         if (instance == null) {
             synchronized (DatabaseManager.class) {
@@ -30,6 +34,10 @@ public class DatabaseManager {
 
     private synchronized void connect() {
         try {
+            if (Versus.getInstance() == null || Versus.getInstance().getDataFolder() == null) {
+                Versus.error("Cannot connect to Database: plugin instance or data folder is null.");
+                return;
+            }
             File dataFolder = new File(Versus.getInstance().getDataFolder(), "data");
             if (!dataFolder.exists()) {
                 dataFolder.mkdirs();
